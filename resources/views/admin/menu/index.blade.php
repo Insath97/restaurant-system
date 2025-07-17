@@ -46,7 +46,7 @@
                                         <td>
                                             <img src="{{ asset($menu->image) }}" alt="{{ $menu->name }}"
                                                 class="menu-item-img"
-                                                onerror="this.src='{{ asset('images/default-food.png') }}'">
+                                                onerror="this.src='{{ asset('default/dummy_600x400_ffffff_cccccc.png') }}'">
                                         </td>
                                         <td>{{ $menu->name }}</td>
                                         <td>{{ $menu->code }}</td>
@@ -398,7 +398,6 @@
                     }
                 });
             });
-
 
         });
 
