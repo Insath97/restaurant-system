@@ -117,7 +117,7 @@
                     </select>
                     <span class="ms-1">entries</span>
                 </div>
-            `);
+              `);
 
                         // Style search input
                         $('.dataTables_filter input').addClass('form-control form-control-sm');
@@ -161,6 +161,225 @@
                         alert('Failed to load category data. Please try again.');
                     }
                 });
+            });
+
+            // Handle create form submission
+            $('#addCategoryForm').on('submit', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const formData = new FormData(this);
+                const submitBtn = form.find('button[type="submit"]');
+
+                // Create and show spinner
+                const spinner = $(
+                    '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>'
+                    );
+                submitBtn.prepend(spinner);
+                submitBtn.prop('disabled', true);
+                submitBtn.find('.btn-text').text('Saving...');
+
+                // Clear previous errors
+                form.find('.is-invalid').removeClass('is-invalid');
+                form.find('.invalid-feedback').text('');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Remove spinner and reset button
+                            spinner.remove();
+                            submitBtn.prop('disabled', false);
+                            submitBtn.find('.btn-text').text('Save Category');
+
+                            // Show success toast
+                            Swal.fire({
+                                icon: 'success',
+                                text: response.message ||
+                                    'Category created successfully',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didClose: () => {
+                                    $('#addCategoryModal').modal('hide');
+                                    form.trigger('reset');
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Remove spinner and reset button
+                        spinner.remove();
+                        submitBtn.prop('disabled', false);
+                        submitBtn.find('.btn-text').text('Save Category');
+
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+
+                            // Display errors under each field
+                            $.each(errors, function(field, messages) {
+                                const input = form.find('[name="' + field + '"]');
+                                const errorContainer = input.closest('.mb-3').find(
+                                    '.invalid-feedback');
+
+                                input.addClass('is-invalid');
+                                if (errorContainer.length) {
+                                    errorContainer.text(messages[0]).show();
+                                } else {
+                                    input.after('<div class="invalid-feedback">' +
+                                        messages[0] + '</div>');
+                                }
+                            });
+
+                            // Keep modal open
+                            $('#addCategoryModal').modal('show');
+                        } else {
+                            let errorMsg = 'An error occurred';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.message) {
+                                    errorMsg = response.message;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing response:', e);
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                text: errorMsg,
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Handle edit form submission
+            $('#editCategoryForm').on('submit', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const formData = new FormData(this);
+                const submitBtn = form.find('button[type="submit"]');
+
+                // Create and show spinner
+                const spinner = $(
+                    '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>'
+                    );
+                submitBtn.prepend(spinner);
+                submitBtn.prop('disabled', true);
+                submitBtn.find('.btn-text').text('Updating...');
+
+                // Clear previous errors
+                form.find('.is-invalid').removeClass('is-invalid');
+                form.find('.invalid-feedback').text('');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-HTTP-Method-Override': 'PUT'
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Remove spinner and reset button
+                            spinner.remove();
+                            submitBtn.prop('disabled', false);
+                            submitBtn.find('.btn-text').text('Update Category');
+
+                            // Show success toast
+                            Swal.fire({
+                                icon: 'success',
+                                text: response.message ||
+                                    'Category updated successfully',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didClose: () => {
+                                    $('#editCategoryModal').modal('hide');
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Remove spinner and reset button
+                        spinner.remove();
+                        submitBtn.prop('disabled', false);
+                        submitBtn.find('.btn-text').text('Update Category');
+
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+
+                            // Display errors under each field
+                            $.each(errors, function(field, messages) {
+                                const input = form.find('[name="' + field + '"]');
+                                const errorContainer = input.closest('.mb-3').find(
+                                    '.invalid-feedback');
+
+                                input.addClass('is-invalid');
+                                if (errorContainer.length) {
+                                    errorContainer.text(messages[0]).show();
+                                } else {
+                                    input.after('<div class="invalid-feedback">' +
+                                        messages[0] + '</div>');
+                                }
+                            });
+
+                            // Keep modal open
+                            $('#editCategoryModal').modal('show');
+                        } else {
+                            let errorMsg = 'An error occurred';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.message) {
+                                    errorMsg = response.message;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing response:', e);
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                text: errorMsg,
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Reset form when modal is closed
+            $('#addCategoryModal, #editCategoryModal').on('hidden.bs.modal', function() {
+                const form = $(this).find('form');
+                form.trigger('reset');
+                form.find('.is-invalid').removeClass('is-invalid');
+                form.find('.invalid-feedback').text('').hide();
+                const submitBtn = form.find('button[type="submit"]');
+                submitBtn.find('.spinner-border').remove();
+                submitBtn.find('.btn-text').text($(this).attr('id') === 'addCategoryModal' ?
+                    'Save Category' : 'Update Category');
+                submitBtn.prop('disabled', false);
             });
 
         });

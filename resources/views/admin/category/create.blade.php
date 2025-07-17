@@ -5,13 +5,13 @@
                 <h5 class="modal-title" id="addCategoryModalLabel">Add New Category</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST" action="{{ route('admin.categories.store') }}" enctype="multipart/form-data">
+            <form method="POST" action="{{ route('admin.categories.store') }}" id="addCategoryForm" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="mb-3">
                         <label for="name" class="form-label">Category Name *</label>
                         <input type="text" class="form-control @error('name') is-invalid @enderror" id="name"
-                            name="name" value="{{ old('name') }}" required>
+                            name="name" value="{{ old('name') }}">
                         @error('name')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -24,7 +24,7 @@
                         <div class="input-group">
                             <span class="input-group-text"><i class="fas fa-code"></i></span>
                             <input type="text" class="form-control @error('code') is-invalid @enderror"
-                                id="code" name="code" value="{{ old('code') }}" required>
+                                id="code" name="code" value="{{ old('code') }}">
                         </div>
                         <small class="text-muted">Unique identifier for the category (e.g., APPETIZERS)</small>
                         @error('code')

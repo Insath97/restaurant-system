@@ -29,13 +29,17 @@ class CategoryController extends Controller
             $category->description = $validated['description'] ?? null;
             $category->save();
 
-            toast('Category created successfully!', 'success');
-            return redirect()->route('admin.categories.index');
+            return response()->json([
+                'success' => true,
+                'message' => 'Category created successfully!',
+                'menu' => $category,
+            ], 201);
         } catch (\Throwable $th) {
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to create category. Please try again.')
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create category item',
+                'error' => $th->getMessage()
+            ], 500);
         }
     }
 
@@ -58,13 +62,17 @@ class CategoryController extends Controller
             $category->description = $validated['description'] ?? null;
             $category->save();
 
-            toast('Category updated successfully!', 'success');
-            return redirect()->route('admin.categories.index');
+            return response()->json([
+                'success' => true,
+                'message' => 'Category updated successfully!',
+                'menu' => $category,
+            ], 201);
         } catch (\Throwable $th) {
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to update category. Please try again.')
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update category item',
+                'error' => $th->getMessage()
+            ], 500);
         }
     }
 
