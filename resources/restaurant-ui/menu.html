@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Menu | Colombo Spice</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --spice-red: #B22222;
+            --golden-yellow: #FFD700;
+            --coconut-white: #FFF8DC;
+            --deep-green: #006400;
+            --charcoal: #333333;
+            --light-spice: rgba(178, 34, 34, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--charcoal);
+            background-color: var(--coconut-white);
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Playfair Display', serif;
+            color: var(--spice-red);
+        }
+
+        /* Navigation */
+        .navbar {
+            background-color: var(--charcoal) !important;
+        }
+
+        /* Menu Header */
+        .menu-header {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 0;
+            color: white;
+            text-align: center;
+        }
+
+        /* Menu Section */
+        .menu-section {
+            padding: 80px 0;
+        }
+
+        .section-title {
+            position: relative;
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: var(--golden-yellow);
+            border-radius: 2px;
+        }
+
+        .menu-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+            margin-bottom: 30px;
+            height: 100%;
+            border: 1px solid rgba(178, 34, 34, 0.1);
+        }
+
+        .menu-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .menu-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .menu-card-body {
+            padding: 25px;
+        }
+
+        .menu-card-title {
+            font-family: 'Playfair Display', serif;
+            color: var(--spice-red);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .menu-card-price {
+            color: var(--deep-green);
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .menu-card-rating {
+            color: var(--golden-yellow);
+            margin-bottom: 10px;
+        }
+
+        .btn-add-to-cart {
+            background-color: var(--spice-red);
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 30px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .btn-add-to-cart:hover {
+            background-color: var(--golden-yellow);
+            color: var(--charcoal);
+            transform: translateY(-3px);
+        }
+
+        /* Cart Sidebar */
+        .cart-sidebar {
+            position: fixed;
+            right: -400px;
+            top: 0;
+            width: 400px;
+            height: 100vh;
+            background-color: white;
+            box-shadow: -5px 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1050;
+            transition: right 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .cart-sidebar.show {
+            right: 0;
+        }
+
+        .cart-header {
+            background-color: var(--spice-red);
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .cart-item-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 5px;
+        }
+
+        .cart-total {
+            padding: 20px;
+            background-color: var(--light-spice);
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .cart-toggle {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            background-color: var(--spice-red);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1040;
+            transition: all 0.3s;
+        }
+
+        .cart-toggle:hover {
+            transform: scale(1.1);
+            background-color: var(--golden-yellow);
+            color: var(--charcoal);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--golden-yellow);
+            color: var(--charcoal);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* Toast Notification */
+        .toast-container {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1100;
+        }
+
+        .toast {
+            background-color: var(--spice-red);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px) translateX(-50%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) translateX(-50%);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1199px) {
+            .cart-sidebar {
+                width: 350px;
+            }
+        }
+
+        @media (max-width: 991px) {
+            .menu-header {
+                padding: 80px 0;
+            }
+        }
+
+        @media (max-width: 767px) {
+            .cart-sidebar {
+                width: 100%;
+            }
+
+            .cart-toggle {
+                width: 60px;
+                height: 60px;
+                right: 20px;
+                bottom: 20px;
+            }
+        }
+
+        @media (max-width: 575px) {
+            .menu-header {
+                padding: 60px 0;
+            }
+
+            .section-title {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <span style="color: var(--golden-yellow); font-family: 'Playfair Display', serif;">Colombo Spice</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="menu.html">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html#reservation">Reservations</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#cart" id="cartLink">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge d-none">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Menu Header -->
+    <section class="menu-header">
+        <div class="container">
+            <h1 class="display-3 mb-4">Our Authentic Sri Lankan Menu</h1>
+            <p class="lead">Experience the rich flavors of Sri Lanka's culinary heritage</p>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section class="menu-section">
+        <div class="container">
+            <h2 class="text-center section-title">Signature Dishes</h2>
+            <p class="text-center mb-5">Explore our carefully curated selection of traditional Sri Lankan cuisine</p>
+
+            <!-- Short Eats (Appetizers) -->
+            <h3 class="mt-5 mb-4" id="short-eats">Short Eats</h3>
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                            alt="Fish Cutlets">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Fish Cutlets</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="mb-3">Spiced fish mixed with potatoes, coated in breadcrumbs and deep-fried to
+                                perfection. Served with tangy tamarind sauce.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 450</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=687&q=80"
+                            alt="Chicken Rolls">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Chicken Rolls</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <p class="mb-3">Flaky pastry filled with spiced chicken and vegetables, a Sri Lankan street
+                                food favorite.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 380</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1544025162-d76694265947?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1469&q=80"
+                            alt="Vegetable Samosas">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Vegetable Samosas</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="mb-3">Crispy pastry filled with spiced potatoes, peas, and carrots. Served with
+                                mint chutney.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 350</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Rice & Curry -->
+            <h3 class="mt-5 mb-4" id="rice-curry">Rice & Curry</h3>
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1559847844-5315695dadae?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1398&q=80"
+                            alt="Traditional Rice & Curry">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Traditional Rice & Curry</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="mb-3">White or red rice with 3 curries of your choice, papadum, and sambol.
+                                Includes dhal, a vegetable curry, and your choice of fish, chicken, or beef curry.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 950</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1565557623262-b51c2513a641?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1371&q=80"
+                            alt="Lamprais">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Lamprais</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="mb-3">A Dutch Burgher specialty - rice and curries wrapped in banana leaf and
+                                baked, including meat curry, frikkadels, and seeni sambol.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 1200</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                            alt="Seafood Rice">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Seafood Rice</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="mb-3">Fragrant rice cooked with prawns, squid, and fish, flavored with pandan
+                                leaves and spices.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 1400</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kottu & Noodles -->
+            <h3 class="mt-5 mb-4" id="kottu-noodles">Kottu & Noodles</h3>
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80"
+                            alt="Chicken Kottu">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Chicken Kottu</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="mb-3">Chopped roti stir-fried with chicken, vegetables, eggs, and spices - Sri
+                                Lanka's most famous street food.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 850</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                            alt="Cheese Kottu">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Cheese Kottu</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <p class="mb-3">Our classic kottu with an extra layer of melted cheese for a rich, indulgent
+                                version.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 950</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                            alt="Singapore Noodles">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Singapore Noodles</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <p class="mb-3">Stir-fried rice noodles with shrimp, chicken, and vegetables in a spicy
+                                curry sauce.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 900</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Beverages -->
+            <h3 class="mt-5 mb-4" id="beverages">Beverages</h3>
+            <div class="row">
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1436076863939-06870fe779c2?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                            alt="King Coconut Water">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">King Coconut Water</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <p class="mb-3">Fresh king coconut water served chilled, nature's perfect electrolyte drink.
+                            </p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 350</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80"
+                            alt="Ginger Beer">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Ginger Beer</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="far fa-star"></i>
+                            </div>
+                            <p class="mb-3">Traditional Sri Lankan ginger beer with a spicy kick, made with fresh ginger
+                                and lime.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 400</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="menu-card">
+                        <img src="https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                            alt="Ceylon Tea">
+                        <div class="menu-card-body">
+                            <h3 class="menu-card-title">Ceylon Tea</h3>
+                            <div class="menu-card-rating">
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star"></i>
+                                <i class="fas fa-star-half-alt"></i>
+                            </div>
+                            <p class="mb-3">Premium Ceylon tea served with milk or lemon. Choose from our selection of
+                                high-grown teas.</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="menu-card-price">Rs. 300</span>
+                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Shopping Cart Sidebar -->
+    <div class="cart-sidebar">
+        <div class="cart-header">
+            <h5 class="mb-0">Your Order</h5>
+            <button class="btn-close btn-close-white" id="closeCart"></button>
+        </div>
+
+        <div class="cart-items p-3">
+            <div class="text-center py-5" id="emptyCartMessage">
+                <i class="fas fa-shopping-cart fa-3x mb-3" style="color: #ddd;"></i>
+                <p>Your cart is empty</p>
+                <a href="#short-eats" class="btn btn-spice">Browse Menu</a>
+            </div>
+        </div>
+
+        <div class="cart-total">
+            <div class="d-flex justify-content-between">
+                <span>Subtotal:</span>
+                <span id="cartSubtotal">Rs. 0.00</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>Service Charge (10%):</span>
+                <span id="cartService">Rs. 0.00</span>
+            </div>
+            <div class="d-flex justify-content-between">
+                <span>Total:</span>
+                <span id="cartTotal">Rs. 0.00</span>
+            </div>
+        </div>
+
+        <div class="p-3">
+            <button class="btn btn-spice w-100 mb-3" id="checkoutBtn">Proceed to Checkout</button>
+            <button class="btn btn-outline-spice w-100" id="viewCartBtn">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- Cart Toggle Button -->
+    <div class="cart-toggle" id="cartToggle">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge">0</span>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2023 Colombo Spice. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white me-3">Privacy Policy</a>
+                    <a href="#" class="text-white">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // ==================== CART FUNCTIONALITY ====================
+            const cartToggle = document.getElementById('cartToggle');
+            const cartSidebar = document.querySelector('.cart-sidebar');
+            const closeCart = document.getElementById('closeCart');
+            const cartItemsContainer = document.querySelector('.cart-items');
+            const emptyCartMessage = document.getElementById('emptyCartMessage');
+            const cartSubtotalElement = document.getElementById('cartSubtotal');
+            const cartServiceElement = document.getElementById('cartService');
+            const cartTotalElement = document.getElementById('cartTotal');
+            const cartBadge = document.querySelector('.cart-badge');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+            const viewCartBtn = document.getElementById('viewCartBtn');
+            const cartLink = document.getElementById('cartLink');
+            const navCartBadge = cartLink.querySelector('.cart-badge');
+
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            // Initialize cart on page load
+            updateCart();
+
+            // Toggle cart visibility
+            cartToggle.addEventListener('click', function () {
+                cartSidebar.classList.toggle('show');
+            });
+
+            closeCart.addEventListener('click', function () {
+                cartSidebar.classList.remove('show');
+            });
+
+            viewCartBtn.addEventListener('click', function () {
+                cartSidebar.classList.remove('show');
+            });
+
+            cartLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                cartSidebar.classList.toggle('show');
+            });
+
+            checkoutBtn.addEventListener('click', function () {
+                if (cart.length > 0) {
+                    window.location.href = 'checkout.html';
+                } else {
+                    showToast('Your cart is empty!');
+                }
+            });
+
+            // Add to cart functionality
+            document.addEventListener('click', function (e) {
+                if (e.target.classList.contains('btn-add-to-cart')) {
+                    const button = e.target;
+                    const menuCard = button.closest('.menu-card');
+                    const itemName = menuCard.querySelector('.menu-card-title').textContent;
+                    const itemPrice = parseFloat(menuCard.querySelector('.menu-card-price').textContent.replace(/[^\d.]/g, ''));
+                    const itemImage = menuCard.querySelector('img').src;
+
+                    // Check if item already exists in cart
+                    const existingItem = cart.find(item => item.name === itemName);
+
+                    if (existingItem) {
+                        existingItem.quantity += 1;
+                        showToast(`Increased quantity of ${itemName} in cart`);
+                    } else {
+                        cart.push({
+                            name: itemName,
+                            price: itemPrice,
+                            image: itemImage,
+                            quantity: 1
+                        });
+                        showToast(`${itemName} added to cart`);
+                    }
+
+                    updateCart();
+                    cartSidebar.classList.add('show');
+
+                    // Save to localStorage
+                    localStorage.setItem('cart', JSON.stringify(cart));
+
+                    // Button animation
+                    button.innerHTML = '<i class="fas fa-check"></i> Added';
+                    button.classList.add('btn-success');
+                    setTimeout(() => {
+                        button.innerHTML = 'Add to Cart';
+                        button.classList.remove('btn-success');
+                    }, 1000);
+                }
+            });
+
+            // Update cart display
+            function updateCart() {
+                // Update cart items
+                if (cart.length > 0) {
+                    emptyCartMessage.style.display = 'none';
+
+                    let cartHTML = '';
+                    let subtotal = 0;
+
+                    cart.forEach((item, index) => {
+                        const itemTotal = item.price * item.quantity;
+                        subtotal += itemTotal;
+
+                        cartHTML += `
+                            <div class="cart-item">
+                                <div class="d-flex align-items-center">
+                                    <img src="${item.image}" alt="${item.name}" class="cart-item-img me-3">
+                                    <div>
+                                        <h6 class="mb-1">${item.name}</h6>
+                                        <p class="mb-0">Rs. ${item.price.toFixed(2)} x ${item.quantity}</p>
+                                    </div>
+                                </div>
+                                <div>
+                                    <span class="d-block text-end">Rs. ${itemTotal.toFixed(2)}</span>
+                                    <div class="btn-group btn-group-sm mt-2">
+                                        <button class="btn btn-outline-secondary decrease-item" data-index="${index}">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger remove-item" data-index="${index}">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="btn btn-outline-secondary increase-item" data-index="${index}">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    });
+
+                    cartItemsContainer.innerHTML = cartHTML;
+
+                    // Calculate totals correctly
+                    const serviceCharge = subtotal * 0.1;
+                    const total = subtotal + serviceCharge;
+
+                    cartSubtotalElement.textContent = `Rs. ${subtotal.toFixed(2)}`;
+                    cartServiceElement.textContent = `Rs. ${serviceCharge.toFixed(2)}`;
+                    cartTotalElement.textContent = `Rs. ${total.toFixed(2)}`;
+
+                    // Add event listeners to cart buttons
+                    document.querySelectorAll('.remove-item').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            const removedItem = cart[index].name;
+                            cart.splice(index, 1);
+                            updateCart();
+                            showToast(`${removedItem} removed from cart`);
+                            localStorage.setItem('cart', JSON.stringify(cart));
+                        });
+                    });
+
+                    document.querySelectorAll('.decrease-item').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            if (cart[index].quantity > 1) {
+                                cart[index].quantity -= 1;
+                                updateCart();
+                                showToast(`Reduced quantity of ${cart[index].name}`);
+                                localStorage.setItem('cart', JSON.stringify(cart));
+                            }
+                        });
+                    });
+
+                    document.querySelectorAll('.increase-item').forEach(button => {
+                        button.addEventListener('click', function () {
+                            const index = parseInt(this.getAttribute('data-index'));
+                            cart[index].quantity += 1;
+                            updateCart();
+                            showToast(`Increased quantity of ${cart[index].name}`);
+                            localStorage.setItem('cart', JSON.stringify(cart));
+                        });
+                    });
+                } else {
+                    emptyCartMessage.style.display = 'block';
+                    cartItemsContainer.innerHTML = '';
+                    cartSubtotalElement.textContent = `Rs. 0.00`;
+                    cartServiceElement.textContent = `Rs. 0.00`;
+                    cartTotalElement.textContent = `Rs. 0.00`;
+                }
+
+                // Update badges
+                const itemCount = cart.reduce((count, item) => count + item.quantity, 0);
+                cartBadge.textContent = itemCount;
+                cartBadge.style.display = itemCount > 0 ? 'flex' : 'none';
+                navCartBadge.textContent = itemCount;
+                navCartBadge.style.display = itemCount > 0 ? 'flex' : 'none';
+            }
+
+            // ==================== TOAST NOTIFICATIONS ====================
+            function showToast(message) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+                const toastContainer = document.getElementById('toastContainer');
+                toastContainer.appendChild(toast);
+
+                // Remove toast after 3 seconds
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+
+            // ==================== SMOOTH SCROLLING ====================
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    if (this.getAttribute('href') !== '#') {
+                        e.preventDefault();
+                        const target = document.querySelector(this.getAttribute('href'));
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

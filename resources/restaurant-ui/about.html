@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us | Colombo Spice</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --spice-red: #B22222;
+            --golden-yellow: #FFD700;
+            --coconut-white: #FFF8DC;
+            --deep-green: #006400;
+            --charcoal: #333333;
+            --light-spice: rgba(178, 34, 34, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--charcoal);
+            background-color: var(--coconut-white);
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: 'Playfair Display', serif;
+            color: var(--spice-red);
+        }
+
+        .hero-section {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)),
+                url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1374&q=80');
+            background-size: cover;
+            background-position: center;
+            padding: 100px 0;
+            color: white;
+            text-align: center;
+        }
+
+        .about-feature {
+            display: flex;
+            margin-bottom: 30px;
+        }
+
+        .about-icon {
+            font-size: 2rem;
+            color: var(--spice-red);
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+
+        .team-card {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .team-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid var(--golden-yellow);
+            margin: 0 auto 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+
+        .timeline:before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--golden-yellow);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 30px;
+        }
+
+        .timeline-item:before {
+            content: '';
+            position: absolute;
+            left: -30px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: var(--spice-red);
+            border: 3px solid var(--golden-yellow);
+        }
+
+        /* Shopping Cart (same as other pages) */
+        .cart-toggle {
+            position: fixed;
+            right: 30px;
+            bottom: 30px;
+            background-color: var(--spice-red);
+            color: white;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+            z-index: 1040;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: var(--golden-yellow);
+            color: var(--charcoal);
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">
+                <span style="color: var(--golden-yellow); font-family: 'Playfair Display', serif;">Colombo Spice</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="menu.html">Menu</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="aboutus.html">About Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="contact.html">Contact</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge d-none">0</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <h1 class="display-3 mb-4">Our Story</h1>
+            <p class="lead">Preserving Sri Lankan culinary traditions since 2010</p>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-5 mb-lg-0">
+                    <img src="https://images.unsplash.com/photo-1601050690597-df0568f70950?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                        alt="Colombo Spice Restaurant" class="img-fluid rounded shadow">
+                </div>
+                <div class="col-lg-6">
+                    <h2 class="mb-4">Authentic Sri Lankan Flavors</h2>
+                    <p>Founded in 2010 by Chef Ranjith Perera, Colombo Spice brings the authentic taste of Sri Lanka to
+                        Colombo's culinary scene. What began as a small family-run eatery has grown into one of the
+                        city's most beloved restaurants, celebrated for its commitment to traditional recipes and
+                        locally-sourced ingredients.</p>
+                    <p>Our mission is to preserve Sri Lanka's rich culinary heritage while creating memorable dining
+                        experiences. Each dish tells a story of the island's diverse cultural influences - from Malay
+                        and Indian to Dutch and Portuguese.</p>
+
+                    <div class="mt-5">
+                        <div class="about-feature">
+                            <div class="about-icon">
+                                <i class="fas fa-utensils"></i>
+                            </div>
+                            <div>
+                                <h5>Traditional Recipes</h5>
+                                <p>Authentic dishes prepared using time-honored Sri Lankan cooking techniques passed
+                                    down through generations.</p>
+                            </div>
+                        </div>
+
+                        <div class="about-feature">
+                            <div class="about-icon">
+                                <i class="fas fa-leaf"></i>
+                            </div>
+                            <div>
+                                <h5>Local Ingredients</h5>
+                                <p>We source directly from Sri Lankan farmers, fishermen, and spice growers to ensure
+                                    freshness and support local communities.</p>
+                            </div>
+                        </div>
+
+                        <div class="about-feature">
+                            <div class="about-icon">
+                                <i class="fas fa-award"></i>
+                            </div>
+                            <div>
+                                <h5>Award-Winning</h5>
+                                <p>Recognized as "Best Sri Lankan Restaurant" by Sri Lanka Tourism for five consecutive
+                                    years.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our Team -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">Meet Our Team</h2>
+
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="team-card">
+                        <img src="https://randomuser.me/api/portraits/men/65.jpg" alt="Chef Ranjith Perera"
+                            class="team-img">
+                        <h4>Chef Ranjith Perera</h4>
+                        <p class="text-muted">Executive Chef & Founder</p>
+                        <p>With over 25 years of experience, Chef Ranjith specializes in traditional Sri Lankan cuisine
+                            with a modern presentation.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="team-card">
+                        <img src="https://randomuser.me/api/portraits/women/45.jpg" alt="Nayomi Fernando"
+                            class="team-img">
+                        <h4>Nayomi Fernando</h4>
+                        <p class="text-muted">Head Pastry Chef</p>
+                        <p>Creator of our famous watalappan and other Sri Lankan desserts, trained in both Colombo and
+                            Paris.</p>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="team-card">
+                        <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="Dinesh Silva" class="team-img">
+                        <h4>Dinesh Silva</h4>
+                        <p class="text-muted">Beverage Director</p>
+                        <p>Expert in Ceylon teas and traditional Sri Lankan beverages, with extensive knowledge of spice
+                            pairings.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Our History -->
+    <section class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Our Journey</h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h4>2010</h4>
+                    <p>Colombo Spice opens its doors as a small 20-seat restaurant in Colombo 03, specializing in
+                        home-style Sri Lankan cuisine.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>2013</h4>
+                    <p>Featured in Lonely Planet's guide to Sri Lanka, bringing international recognition to our
+                        authentic flavors.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>2015</h4>
+                    <p>Expanded to our current location with a full-service dining room and open kitchen concept.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>2018</h4>
+                    <p>First awarded "Best Sri Lankan Restaurant" by Sri Lanka Tourism, an honor we've maintained
+                        annually.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>2020</h4>
+                    <p>Launched our spice masterclass series, teaching guests about traditional Sri Lankan cooking
+                        techniques.</p>
+                </div>
+
+                <div class="timeline-item">
+                    <h4>2023</h4>
+                    <p>Celebrated our 13th anniversary with the launch of our cookbook "Tastes of Sri Lanka".</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start">
+                    <p class="mb-0">&copy; 2023 Colombo Spice. All Rights Reserved.</p>
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <a href="#" class="text-white me-3">Privacy Policy</a>
+                    <a href="#" class="text-white">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Cart Toggle Button -->
+    <div class="cart-toggle" id="cartToggle">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge">0</span>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Simple cart badge functionality (full cart would be same as other pages)
+        document.addEventListener('DOMContentLoaded', function () {
+            // Load cart from localStorage
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+            // Update all badges
+            document.querySelectorAll('.cart-badge').forEach(badge => {
+                badge.textContent = itemCount;
+                badge.style.display = itemCount > 0 ? 'flex' : 'none';
+            });
+
+            // Cart toggle functionality
+            document.getElementById('cartToggle').addEventListener('click', function () {
+                window.location.href = 'menu.html#cart';
+            });
+        });
+    </script>
+</body>
+
+</html>
