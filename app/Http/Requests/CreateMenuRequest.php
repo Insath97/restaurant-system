@@ -27,7 +27,7 @@ class CreateMenuRequest extends FormRequest
             'code' => 'required|string|max:50|unique:menus,code',
             'price' => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp',
             'is_featured' => 'nullable|boolean'
         ];
     }

@@ -110,6 +110,228 @@
                 }
             });
 
+            // Handle create form submission
+            $('#menuItemForm').on('submit', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const formData = new FormData(this);
+                const submitBtn = form.find('button[type="submit"]');
+                const spinner = submitBtn.find('.spinner-border');
+                const submitText = submitBtn.find('.submit-text');
+
+                // Show loading state
+                submitText.text('Saving...');
+                spinner.removeClass('d-none');
+                submitBtn.prop('disabled', true);
+
+                // Clear previous errors
+                form.find('.is-invalid').removeClass('is-invalid');
+                form.find('.invalid-feedback').text('');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Reset button state
+                            spinner.addClass('d-none');
+                            submitText.text('Save Item');
+                            submitBtn.prop('disabled', false);
+
+                            // Show success toast with fixed height
+                            Swal.fire({
+                                icon: 'success',
+                                text: response.message || 'Menu created successfully',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didClose: () => {
+                                    // Hide modal and reset form
+                                    $('#addMenuItemModal').modal('hide');
+                                    form.trigger('reset');
+                                    $('#imagePreview').addClass('d-none');
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Reset button state
+                        spinner.addClass('d-none');
+                        submitText.text('Save Item');
+                        submitBtn.prop('disabled', false);
+
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+
+                            // Display errors under each field
+                            $.each(errors, function(field, messages) {
+                                const input = form.find('[name="' + field + '"]');
+                                // Special handling for file inputs
+                                const errorContainer = input.next('.invalid-feedback')
+                                    .length ?
+                                    input.next('.invalid-feedback') :
+                                    input.closest('.mb-3').find('.invalid-feedback');
+
+                                input.addClass('is-invalid');
+                                if (errorContainer.length) {
+                                    errorContainer.text(messages[0]);
+                                }
+                            });
+
+                            // Keep modal open
+                            $('#addMenuItemModal').modal('show');
+                        } else {
+                            let errorMsg = 'An error occurred';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.message) {
+                                    errorMsg = response.message;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing response:', e);
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                text: errorMsg,
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Handle edit form submission
+            $('#editMenuItemForm').on('submit', function(e) {
+                e.preventDefault();
+                const form = $(this);
+                const formData = new FormData(this);
+                const submitBtn = form.find('button[type="submit"]');
+                const spinner = submitBtn.find('.spinner-border');
+                const submitText = submitBtn.find('.submit-text');
+
+                // Show loading state
+                submitText.text('Updating...');
+                spinner.removeClass('d-none');
+                submitBtn.prop('disabled', true);
+
+                // Clear previous errors
+                form.find('.is-invalid').removeClass('is-invalid');
+                form.find('.invalid-feedback').text('');
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    headers: {
+                        'X-HTTP-Method-Override': 'PUT'
+                    },
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response.success) {
+                            // Reset button state
+                            spinner.addClass('d-none');
+                            submitText.text('Update Item');
+                            submitBtn.prop('disabled', false);
+
+                            // Show success toast
+                            Swal.fire({
+                                icon: 'success',
+                                text: response.message || 'Menu updated successfully',
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                didClose: () => {
+                                    // Hide modal and reset form
+                                    $('#editMenuItemModal').modal('hide');
+                                    form.trigger('reset');
+                                    $('#edit_imagePreview').addClass('d-none');
+                                    window.location.reload();
+                                }
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        // Reset button state
+                        spinner.addClass('d-none');
+                        submitText.text('Update Item');
+                        submitBtn.prop('disabled', false);
+
+                        if (xhr.status === 422) {
+                            const errors = xhr.responseJSON.errors;
+
+                            // Display errors under each field
+                            $.each(errors, function(field, messages) {
+                                const input = form.find('[name="' + field + '"]');
+                                const errorContainer = form.find('.' + field + '-error')
+                                    .length ?
+                                    form.find('.' + field + '-error') :
+                                    input.closest('.mb-3').find('.invalid-feedback');
+
+                                input.addClass('is-invalid');
+                                if (errorContainer.length) {
+                                    errorContainer.text(messages[0]);
+                                }
+                            });
+
+                            // Keep modal open
+                            $('#editMenuItemModal').modal('show');
+                        } else {
+                            let errorMsg = 'An error occurred';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.message) {
+                                    errorMsg = response.message;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing response:', e);
+                            }
+
+                            Swal.fire({
+                                icon: 'error',
+                                /*   title: 'Error', */
+                                text: errorMsg,
+                                toast: true,
+                                position: 'top-end',
+                                showConfirmButton: false,
+                                timer: 3000,
+                                timerProgressBar: true,
+                                customClass: {
+                                    popup: 'swal-toast-height'
+                                }
+                            });
+                        }
+                    }
+                });
+            });
+
+            // Reset form when modal is closed
+            $('#addMenuItemModal, #editMenuItemModal').on('hidden.bs.modal', function() {
+                const form = $(this).find('form');
+                form.trigger('reset');
+                form.find('.is-invalid').removeClass('is-invalid');
+                form.find('.invalid-feedback').text('');
+                form.find('.spinner-border').addClass('d-none');
+                form.find('.submit-text').text($(this).attr('id') === 'addMenuItemModal' ? 'Save Item' :
+                    'Update Item');
+                form.find('button[type="submit"]').prop('disabled', false);
+            });
+
             // Image preview for create modal
             $('#itemImage').change(function() {
                 previewImage(this, '#imagePreview');

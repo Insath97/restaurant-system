@@ -36,22 +36,23 @@
                             <div class="mb-3">
                                 <label for="edit_itemPrice" class="form-label">Price (Rs.) *</label>
                                 <input type="number" class="form-control" id="edit_itemPrice" name="price"
-                                       min="0" step="0.01" required>
+                                    min="0" step="0.01" required>
                                 <div class="invalid-feedback price-error"></div>
                             </div>
                             <div class="mb-3">
                                 <label for="edit_itemImage" class="form-label">Item Image</label>
-                                <input type="file" class="form-control" id="edit_itemImage"
-                                       name="image" accept="image/*">
+                                <input type="file" class="form-control" id="edit_itemImage" name="image"
+                                    accept="image/*">
                                 <small class="text-muted">Max 2MB (JPEG, PNG, JPG, GIF, WEBP)</small>
                                 <div class="invalid-feedback image-error"></div>
                                 <div class="mt-2">
                                     <img id="edit_imagePreview" src="#" alt="Image Preview"
-                                         class="img-thumbnail d-none" style="max-height: 150px;">
+                                        class="img-thumbnail d-none" style="max-height: 150px;">
                                 </div>
                             </div>
                             <div class="mb-3 form-check form-switch">
-                                <input type="checkbox" class="form-check-input" id="edit_isFeatured" name="is_featured">
+                                <input type="checkbox" class="form-check-input" id="edit_isFeatured" name="is_featured"
+                                    value="1">
                                 <label class="form-check-label" for="edit_isFeatured">Featured Item</label>
                             </div>
                         </div>
@@ -64,7 +65,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary-custom">Update Item</button>
+                    <button type="submit" class="btn btn-primary-custom">
+                        <span class="submit-text">Update Item</span>
+                        <span class="spinner-border spinner-border-sm d-none" role="status"></span>
+                    </button>
                 </div>
             </form>
         </div>
