@@ -24,6 +24,10 @@
               <a href="{{ route('admin.roles.index') }}"><i class="fas fa-user-shield"></i> Roles Management</a>
           </li>
 
+          <li class="{{ setSidebarActive(['admin.users.*']) }}">
+              <a href="{{ route('admin.users.index') }}"><i class="fas fa-users"></i> User Management</a>
+          </li>
+
           {{-- ################################## --}}
           <li>
               <a href="#reservations"><i class="fas fa-calendar-check"></i> Reservations</a>
