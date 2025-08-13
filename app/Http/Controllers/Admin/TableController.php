@@ -28,13 +28,17 @@ class TableController extends Controller
             $table->description = $request->validated('description');
             $table->save();
 
-            toast('Table created successfully!', 'success');
-            return redirect()->route('admin.tables.index');
+            return response()->json([
+                'success' => true,
+                'message' => 'Table created successfully!',
+                'menu' => $table,
+            ], 201);
         } catch (\Throwable $th) {
-            toast($th->getMessage(), 'error');
-            return redirect()->back()
-                ->with('error', 'Failed to create table: ' . $th->getMessage())
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to create table item',
+                'error' => $th->getMessage()
+            ], 500);
         }
     }
 
@@ -56,13 +60,17 @@ class TableController extends Controller
             $table->description = $request->validated('description');
             $table->save();
 
-            toast('Table Update successfully!', 'success');
-            return redirect()->route('admin.tables.index');
+            return response()->json([
+                'success' => true,
+                'message' => 'Table updated successfully!',
+                'menu' => $table,
+            ], 200);
         } catch (\Throwable $th) {
-            toast($th->getMessage(), 'error');
-            return redirect()->back()
-                ->with('error', 'Failed to Update table: ' . $th->getMessage())
-                ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to update table item',
+                'error' => $th->getMessage()
+            ], 500);
         }
     }
 

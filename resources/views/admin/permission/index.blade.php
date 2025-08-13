@@ -3,11 +3,11 @@
 @section('content')
     <div class="row mb-4">
         <div class="col-12">
-            <h2>Table Management</h2>
+            <h2>Permission Management</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item"><a href="{{ route('admin.dashboard.index') }}">Dashboard</a></li>
-                    <li class="breadcrumb-item active">Table Management</li>
+                    <li class="breadcrumb-item active">Permission Management</li>
                 </ol>
             </nav>
         </div>
@@ -17,51 +17,35 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">Restaurant Tables</h5>
-                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addTableModal">
-                        <i class="fas fa-plus me-2"></i>Add New Table
+                    <h5 class="mb-0">System Permissions</h5>
+                    <button class="btn btn-primary-custom" data-bs-toggle="modal" data-bs-target="#addPermissionModal">
+                        <i class="fas fa-plus me-2"></i>Add New Permission
                     </button>
                 </div>
 
                 <div class="card-body">
                     <div class="table-responsive">
-                        <table id="tablesTable" class="table table-hover">
+                        <table id="permissionsTable" class="table table-hover">
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Table Code</th>
-                                    <th>Table Name</th>
-                                    <th>Capacity</th>
-                                    <th>Status</th>
-                                    <th>Availability</th>
+                                    <th>Group Name</th>
+                                    <th>Permission Name</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($tables as $table)
+                                @foreach ($permissions as $permission)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $table->code }}</td>
-                                        <td>{{ $table->name }}</td>
-                                        <td>{{ $table->capacity }} guests</td>
-                                        <td>
-                                            <span class="badge bg-{{ $table->statusColor() }}">
-                                                {{ ucfirst($table->status) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input availability-toggle" type="checkbox"
-                                                    data-id="{{ $table->id }}" id="toggle-{{ $table->id }}"
-                                                    {{ $table->is_available ? 'checked' : '' }}>
-                                            </div>
-                                        </td>
+                                        <td>{{ $permission->group_name }}</td>
+                                        <td>{{ $permission->name }}</td>
                                         <td class="action-buttons">
                                             <button class="btn btn-sm btn-primary-custom me-1 edit-item"
-                                                data-id="{{ $table->id }}">
+                                                data-id="{{ $permission->id }}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
-                                            <a href="{{ route('admin.tables.destroy', $table->id) }}"
+                                            <a href="{{ route('admin.permissions.destroy', $permission->id) }}"
                                                 class="btn btn-sm btn-danger text-center delete-item">
                                                 <i class="fas fa-trash"></i>
                                             </a>
@@ -76,15 +60,15 @@
         </div>
     </div>
 
-    @include('admin.table.create')
-    @include('admin.table.edit')
+    @include('admin.permission.create')
+    @include('admin.permission.edit')
 @endsection
 
 @push('scripts')
     <script>
         $(document).ready(function() {
             // Initialize DataTable
-            $('#tablesTable').DataTable({
+            $('#permissionsTable').DataTable({
                 responsive: true,
                 dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
@@ -102,32 +86,33 @@
 
             // Handle edit button click
             $('.edit-item').click(function() {
-                const tableId = $(this).data('id');
-                const editUrl = "{{ route('admin.tables.update', ':id') }}".replace(':id', tableId);
+                const permissionId = $(this).data('id');
+                const editUrl = "{{ route('admin.permissions.update', ':id') }}".replace(':id',
+                    permissionId);
 
                 // Clear previous errors
-                $('#editTableForm').find('.invalid-feedback').text('');
-                $('#editTableForm').find('.is-invalid').removeClass('is-invalid');
+                $('#editPermissionForm').find('.invalid-feedback').text('');
+                $('#editPermissionForm').find('.is-invalid').removeClass('is-invalid');
 
-                // Fetch table data
+                // Fetch permission data
                 $.ajax({
-                    url: "{{ route('admin.tables.edit', ':id') }}".replace(':id', tableId),
+                    url: "{{ route('admin.permissions.edit', ':id') }}".replace(':id',
+                        permissionId),
                     type: 'GET',
                     success: function(response) {
+                        $('#edit_group_name').val(response.group_name);
                         $('#edit_name').val(response.name);
-                        $('#edit_code').val(response.code);
-                        $('#edit_capacity').val(response.capacity);
-                        $('#edit_description').val(response.description);
-                        $('#editTableForm').attr('action', editUrl);
+                        $('#editPermissionForm').attr('action', editUrl);
 
                         // Show modal
-                        new bootstrap.Modal(document.getElementById('editTableModal')).show();
+                        new bootstrap.Modal(document.getElementById('editPermissionModal'))
+                            .show();
                     },
                     error: function(xhr) {
-                        console.error('Error fetching table data:', xhr.responseText);
+                        console.error('Error fetching permission data:', xhr.responseText);
                         Swal.fire({
                             icon: 'error',
-                            text: 'Failed to load table data',
+                            text: 'Failed to load permission data',
                             toast: true,
                             position: 'top-end',
                             showConfirmButton: false,
@@ -139,7 +124,7 @@
             });
 
             // Handle create form submission
-            $('#addTableForm').on('submit', function(e) {
+            $('#addPermissionForm').on('submit', function(e) {
                 e.preventDefault();
                 const form = $(this);
                 const formData = new FormData(this);
@@ -167,20 +152,21 @@
                         if (response.success) {
                             // Reset button state
                             spinner.addClass('d-none');
-                            submitText.text('Save Table');
+                            submitText.text('Save Permission');
                             submitBtn.prop('disabled', false);
 
                             // Show success toast
                             Swal.fire({
                                 icon: 'success',
-                                text: response.message || 'Table created successfully',
+                                text: response.message ||
+                                    'Permission created successfully',
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
                                 timer: 3000,
                                 timerProgressBar: true,
                                 didClose: () => {
-                                    $('#addTableModal').modal('hide');
+                                    $('#addPermissionModal').modal('hide');
                                     form.trigger('reset');
                                     window.location.reload();
                                 }
@@ -190,7 +176,7 @@
                     error: function(xhr) {
                         // Reset button state
                         spinner.addClass('d-none');
-                        submitText.text('Save Table');
+                        submitText.text('Save Permission');
                         submitBtn.prop('disabled', false);
 
                         if (xhr.status === 422) {
@@ -212,7 +198,7 @@
                             });
 
                             // Keep modal open
-                            $('#addTableModal').modal('show');
+                            $('#addPermissionModal').modal('show');
                         } else {
                             let errorMsg = 'An error occurred';
                             try {
@@ -239,7 +225,7 @@
             });
 
             // Handle edit form submission
-            $('#editTableForm').on('submit', function(e) {
+            $('#editPermissionForm').on('submit', function(e) {
                 e.preventDefault();
                 const form = $(this);
                 const formData = new FormData(this);
@@ -270,20 +256,21 @@
                         if (response.success) {
                             // Reset button state
                             spinner.addClass('d-none');
-                            submitText.text('Update Table');
+                            submitText.text('Update Permission');
                             submitBtn.prop('disabled', false);
 
                             // Show success toast
                             Swal.fire({
                                 icon: 'success',
-                                text: response.message || 'Table updated successfully',
+                                text: response.message ||
+                                    'Permission updated successfully',
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
                                 timer: 3000,
                                 timerProgressBar: true,
                                 didClose: () => {
-                                    $('#editTableModal').modal('hide');
+                                    $('#editPermissionModal').modal('hide');
                                     window.location.reload();
                                 }
                             });
@@ -292,7 +279,7 @@
                     error: function(xhr) {
                         // Reset button state
                         spinner.addClass('d-none');
-                        submitText.text('Update Table');
+                        submitText.text('Update Permission');
                         submitBtn.prop('disabled', false);
 
                         if (xhr.status === 422) {
@@ -320,7 +307,7 @@
                             });
 
                             // Keep modal open
-                            $('#editTableModal').modal('show');
+                            $('#editPermissionModal').modal('show');
                         } else {
                             let errorMsg = 'An error occurred';
                             try {
@@ -347,79 +334,18 @@
             });
 
             // Reset form when modal is closed
-            $('#addTableModal, #editTableModal').on('hidden.bs.modal', function() {
+            $('#addPermissionModal, #editPermissionModal').on('hidden.bs.modal', function() {
                 const form = $(this).find('form');
                 form.trigger('reset');
                 form.find('.is-invalid').removeClass('is-invalid');
                 form.find('.invalid-feedback').text('').hide();
                 form.find('.spinner-border').addClass('d-none');
-                form.find('.submit-text').text($(this).attr('id') === 'addTableModal' ? 'Save Table' :
-                    'Update Table');
+                form.find('.submit-text').text($(this).attr('id') === 'addPermissionModal' ?
+                    'Save Permission' :
+                    'Update Permission');
                 form.find('button[type="submit"]').prop('disabled', false);
             });
 
-            // Availability toggle handler
-            $(document).on('change', '.availability-toggle', function() {
-                const checkbox = $(this);
-                const isAvailable = checkbox.is(':checked');
-
-                $.ajax({
-                    url: '/admin/tables/' + checkbox.data('id') + '/toggle-availability',
-                    method: 'PATCH',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        is_available: isAvailable
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            checkbox.prop('checked', response.is_available);
-                            Swal.fire({
-                                icon: 'success',
-                                text: response.message ||
-                                    'Availability updated successfully',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
-                        } else {
-                            checkbox.prop('checked', !isAvailable);
-                            Swal.fire({
-                                icon: 'error',
-                                text: response.message ||
-                                    'Failed to update availability',
-                                toast: true,
-                                position: 'top-end',
-                                showConfirmButton: false,
-                                timer: 3000,
-                                timerProgressBar: true
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        checkbox.prop('checked', !isAvailable);
-                        let errorMsg = 'Error updating availability';
-                        try {
-                            const response = JSON.parse(xhr.responseText);
-                            if (response.message) {
-                                errorMsg = response.message;
-                            }
-                        } catch (e) {
-                            console.error('Error parsing response:', e);
-                        }
-                        Swal.fire({
-                            icon: 'error',
-                            text: errorMsg,
-                            toast: true,
-                            position: 'top-end',
-                            showConfirmButton: false,
-                            timer: 3000,
-                            timerProgressBar: true
-                        });
-                    }
-                });
-            });
         });
     </script>
 @endpush

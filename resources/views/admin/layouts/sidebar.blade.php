@@ -14,8 +14,11 @@
           <li>
               <a href="{{ route('admin.categories.index') }}"><i class="fas fa-tags"></i> Category Management</a>
           </li>
-           <li>
+          <li>
               <a href="{{ route('admin.tables.index') }}"><i class="fas fa-table"></i> Table Management</a>
+          </li>
+          <li>
+              <a href="{{ route('admin.permissions.index') }}"><i class="fas fa-key"></i> Permission Management</a>
           </li>
 
           {{-- ################################## --}}

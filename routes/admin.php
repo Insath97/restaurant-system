@@ -4,17 +4,13 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FoodController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\TableController;
 use Illuminate\Support\Facades\Route;
 
 /* route for without authentication */
 
 Route::group(["prefix" => "admin", "as" => "admin."], function () {
-
-    /* testing route */
-    Route::get("test", function () {
-        return "This is a test route";
-    })->name("test");
 
     /* login */
     Route::get("login", [AuthController::class, "showLoginForm"])->name("login");
@@ -47,4 +43,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", 'middleware' => ['admin']],
     /* table management */
     Route::patch('tables/{id}/toggle-availability', [TableController::class, 'toggleAvailability'])->name('tables.toggle-availability');
     Route::resource('tables', TableController::class);
+
+    /* permission management */
+   Route::resource('permissions', PermissionController::class);
 });

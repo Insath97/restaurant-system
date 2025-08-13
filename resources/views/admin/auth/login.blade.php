@@ -49,7 +49,7 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-envelope"></i></span>
                         <input type="email" class="form-control @error('email') is-invalid @enderror" id="email"
-                            name="email" placeholder="admin@colombospice.com" required value="{{ old('email') }}">
+                            name="email" placeholder="admin@colombospice.com" value="{{ old('email') }}">
                         @error('email')
                             <div class="invalid-feedback">
                                 {{ $message }}
@@ -63,7 +63,7 @@
                     <div class="input-group">
                         <span class="input-group-text"><i class="fas fa-lock"></i></span>
                         <input type="password" class="form-control @error('password') is-invalid @enderror"
-                            id="password" name="password" placeholder="••••••••" required>
+                            id="password" name="password" placeholder="••••••••">
                         <button class="btn btn-outline-secondary toggle-password" type="button">
                             <i class="fas fa-eye"></i>
                         </button>
