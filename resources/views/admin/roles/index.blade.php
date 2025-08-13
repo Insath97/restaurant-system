@@ -140,6 +140,7 @@
                                 position: 'top-end',
                                 showConfirmButton: false,
                                 timer: 3000,
+                                timerProgressBar: true,
                                 didClose: () => {
                                     $('#addRoleModal').modal('hide');
                                     form.trigger('reset');
@@ -164,7 +165,8 @@
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000
+                                timer: 3000,
+                                timerProgressBar: true,
                             });
                         }
                     },
@@ -269,6 +271,7 @@
                                 position: 'top-end',
                                 showConfirmButton: false,
                                 timer: 3000,
+                                timerProgressBar: true,
                                 didClose: () => {
                                     $('#editRoleModal').modal('hide');
                                     window.location.reload();
@@ -292,7 +295,8 @@
                                 toast: true,
                                 position: 'top-end',
                                 showConfirmButton: false,
-                                timer: 3000
+                                timer: 3000,
+                                timerProgressBar: true,
                             });
                         }
                     },
