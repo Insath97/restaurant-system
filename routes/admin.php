@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\TableController;
 use Illuminate\Support\Facades\Route;
 
@@ -46,4 +47,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", 'middleware' => ['admin']],
 
     /* permission management */
    Route::resource('permissions', PermissionController::class);
+
+   /* role management */
+   Route::resource('roles', RolesController::class);
 });
