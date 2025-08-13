@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CreateUserRoleRequest;
 use App\Http\Requests\UpdateUserRoleRequest;
+use App\Mail\UserRoleCreateMail;
 use App\Models\Admin;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Role;
 
 class UserRoleController extends Controller
@@ -31,6 +33,14 @@ class UserRoleController extends Controller
             $user->save();
 
             $user->assignRole($request->validated('role'));
+
+            Mail::to($user->email)->send(
+                new UserRoleCreateMail(
+                    $request->validated('name'),
+                    $request->validated('password'),
+                    $request->validated('role')
+                )
+            );
 
             return response()->json([
                 'success' => true,
