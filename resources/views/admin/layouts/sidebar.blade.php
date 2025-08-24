@@ -1,7 +1,7 @@
   <nav class="sidebar">
       <div class="sidebar-header text-center">
-          <img src="img/logo.png" alt="Colombo Spice Logo" width="120" class="mb-3">
-          <h3>Colombo Spice</h3>
+          <img src="{{ asset('default/Untitled design.png') }}" alt="DFR Logo" width="200">
+          <h3>D F R </h3>
           <p>Admin Dashboard</p>
       </div>
       <ul class="sidebar-menu">

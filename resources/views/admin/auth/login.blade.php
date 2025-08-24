@@ -17,8 +17,8 @@
     <div class="auth-container">
         <div class="auth-card">
             <div class="auth-header text-center mb-4">
-                <img src="img/logo.png" alt="Colombo Spice Logo" width="150">
-                <h2 class="mt-3">Admin Login</h2>
+                <img src="{{ asset('default/Untitled design.png') }}" alt="DFR Logo" width="300">
+                <h2 class="mt-2">Admin Login</h2>
                 <p class="text-muted">Enter your credentials to access the dashboard</p>
             </div>
 
@@ -89,7 +89,7 @@
         </div>
 
         <div class="auth-footer text-center mt-4">
-            <p class="text-muted">&copy; {{ date('Y') }} Colombo Spice. All rights reserved.</p>
+            <p class="text-muted">&copy; {{ date('Y') }} DFR. All rights reserved.</p>
         </div>
     </div>
 

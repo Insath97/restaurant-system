@@ -36,7 +36,7 @@ class UserRoleController extends Controller
 
             Mail::to($user->email)->send(
                 new UserRoleCreateMail(
-                    $request->validated('name'),
+                    $request->validated('email'),
                     $request->validated('password'),
                     $request->validated('role')
                 )

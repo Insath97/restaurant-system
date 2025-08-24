@@ -19,8 +19,8 @@
             <div class="col-lg-4 mb-5">
                 <h4 class="footer-title">Contact Us</h4>
                 <ul class="footer-links">
-                    <li><i class="fas fa-map-marker-alt me-2"></i> 123 Galle Road, Colombo 03, Sri Lanka</li>
-                    <li><i class="fas fa-phone me-2"></i> +94 11 234 5678</li>
+                    <li><i class="fas fa-map-marker-alt me-2"></i>Puttalam, Sri Lanka</li>
+                    <li><i class="fas fa-phone me-2"></i> +94 78 234 5678</li>
                     <li><i class="fas fa-mobile-alt me-2"></i> +94 76 123 4567</li>
                     <li><i class="fas fa-envelope me-2"></i> info@Dfr.com</li>
                 </ul>
