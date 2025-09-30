@@ -51,7 +51,12 @@
                                             <div class="d-flex justify-content-between align-items-center">
                                                 <span class="menu-card-price">Rs.
                                                     {{ number_format($menu->price, 2) }}</span>
-                                                <button class="btn btn-add-to-cart">Add to Cart</button>
+                                                <button class="btn btn-add-to-cart" data-menu-id="{{ $menu->id }}"
+                                                    data-menu-name="{{ $menu->name }}"
+                                                    data-menu-price="{{ $menu->price }}"
+                                                    data-menu-image="{{ asset($menu->image) }}">
+                                                    Add to Cart
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

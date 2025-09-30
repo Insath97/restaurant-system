@@ -2,7 +2,7 @@
 
 @section('content')
     <!-- Hero Section -->
-    <section class="hero-section">
+    <section class="hero-section" style="min-height: 150px">
         <div class="container">
             <h1 class="display-3 mb-4">Our Story</h1>
             <p class="lead">Preserving Sri Lankan culinary traditions since 2010</p>

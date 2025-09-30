@@ -9,8 +9,10 @@
         <div class="text-center py-5" id="emptyCartMessage">
             <i class="fas fa-shopping-cart fa-3x mb-3" style="color: #ddd;"></i>
             <p>Your cart is empty</p>
-            <a href="#menu" class="btn btn-spice">Browse Menu</a>
+            <a href="{{ route('menu') }}" class="btn btn-spice">Browse Menu</a>
         </div>
+
+        <div id="cartItemsContainer"></div>
     </div>
 
     <div class="cart-total">
@@ -29,7 +31,13 @@
     </div>
 
     <div class="p-3">
-        <button class="btn btn-spice w-100 mb-3" id="checkoutBtn">Proceed to Checkout</button>
+        @auth
+            <button class="btn btn-spice w-100 mb-3" id="checkoutBtn">Proceed to Checkout</button>
+        @else
+            <a href="{{ route('login', ['redirect' => url()->current()]) }}" class="btn btn-spice w-100 mb-3">
+                Login to Checkout
+            </a>
+        @endauth
         <button class="btn btn-outline-spice w-100" id="viewCartBtn">View Cart</button>
     </div>
 </div>

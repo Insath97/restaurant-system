@@ -16,19 +16,66 @@
                     <a class="nav-link" href="{{ route('about') }}">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#menu">Menu</a>
-                </li>
-
-
-                <li class="nav-item">
-                    <a class="nav-link" href="#gallery">Gallery</a>
+                    <a class="nav-link" href="{{ route('menu') }}">Menu</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#contact">Contact</a>
+                    <a class="nav-link" href="{{ route('gallery') }}">Gallery</a>
                 </li>
-                <button class="btn btn-danger rounded-pill text-white ms-3">
-                    Reserve Table
-                </button>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('contact') }}">Contact</a>
+                </li>
+
+                <!-- Authentication Links -->
+                @auth
+                    <!-- User is logged in - Show user dropdown -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user-circle me-1"></i>
+                            {{ Auth::user()->name }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">
+                                    <i class="fas fa-user me-2"></i>Profile
+                                </a></li>
+                            <li><a class="dropdown-item" href="#">
+                                    <i class="fas fa-shopping-cart me-2"></i>My Orders
+                                </a></li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+
+                                    <a class="dropdown-item text-danger" href="#"
+                                        onclick="event.preventDefault(); this.closest('form').submit();">
+                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                    </a>
+
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+                @else
+                    <!-- User is not logged in - Show login/register links -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('login') }}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Login
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('register') }}">
+                            <i class="fas fa-user-plus me-1"></i>Register
+                        </a>
+                    </li>
+                @endauth
+
+                <li class="nav-item ms-2">
+                    <button class="btn btn-danger rounded-pill text-white">
+                        Reserve Table
+                    </button>
+                </li>
             </ul>
         </div>
     </div>
