@@ -41,25 +41,21 @@ class CustomerController extends Controller
         return view('client.contact');
     }
 
-
     public function paginateMenu(Request $request)
     {
         $categoryId = $request->input('category_id');
         $page = $request->input('page', 1);
-        $perPage = 3; // Keep it as 1 for testing, but you can change to 3 later
+        $perPage = 3;
 
         $category = Category::with('menus')->findOrFail($categoryId);
         $menus = $category->menus;
         $totalPages = ceil($menus->count() / $perPage);
 
-        // Ensure page is within valid range
         if ($page < 1) $page = 1;
         if ($page > $totalPages) $page = $totalPages;
 
         $currentItems = $menus->forPage($page, $perPage);
 
-
-        // Return JSON data instead of HTML
         return response()->json([
             'menus' => $currentItems->map(function ($menu) {
                 return [
@@ -158,9 +154,6 @@ class CustomerController extends Controller
         }
     }
 
-    /**
-     * Remove item from cart
-     */
     public function removeFromCart(Request $request)
     {
         $request->validate([
@@ -190,9 +183,6 @@ class CustomerController extends Controller
         }
     }
 
-    /**
-     * Update cart item quantity
-     */
     public function updateCart(Request $request)
     {
         $request->validate([
