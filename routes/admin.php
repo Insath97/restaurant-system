@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\PermissionController;
@@ -47,11 +48,14 @@ Route::group(["prefix" => "admin", "as" => "admin.", 'middleware' => ['admin']],
     Route::resource('tables', TableController::class);
 
     /* permission management */
-   Route::resource('permissions', PermissionController::class);
+    Route::resource('permissions', PermissionController::class);
 
-   /* role management */
-   Route::resource('roles', RolesController::class);
+    /* role management */
+    Route::resource('roles', RolesController::class);
 
-   /* user role management */
-   Route::resource('users', UserRoleController::class);
+    /* user role management */
+    Route::resource('users', UserRoleController::class);
+
+    /* customer management */
+    Route::get('customers', [CustomerController::class, "index"])->name('customers.index');
 });
