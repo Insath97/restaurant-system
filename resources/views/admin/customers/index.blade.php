@@ -20,7 +20,7 @@
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Registered Customers</h5>
                     <div class="d-flex">
-                        <span class="badge bg-primary me-3">
+                        <span class="badge bg-primary-custom me-3">
                             Total Customers: {{ $customers->count() }}
                         </span>
                     </div>
