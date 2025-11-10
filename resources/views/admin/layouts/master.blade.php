@@ -126,6 +126,8 @@
 
     @include('sweetalert::alert')
 
+    @stack('styles')
+
     @stack('scripts')
 
 </body>

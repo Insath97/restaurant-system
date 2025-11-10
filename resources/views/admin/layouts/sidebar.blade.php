@@ -14,6 +14,10 @@
               <a href="{{ route('admin.reservations.index') }}"><i class="fas fa-calendar-check"></i> Reservation</a>
           </li>
 
+          <li class="{{ setSidebarActive(['admin.orders.*']) }}">
+              <a href="{{ route('admin.orders.index') }}"><i class="fas fa-shopping-bag"></i> Orders</a>
+          </li>
+
           <li class="{{ setSidebarActive(['admin.customers.*']) }}">
               <a href="{{ route('admin.customers.index') }}"><i class="fas fa-user-friends"></i> Customer Management</a>
           </li>
@@ -44,18 +48,7 @@
 
           {{-- ################################## --}}
           <li>
-              <a href="#reservations"><i class="fas fa-calendar-check"></i> Reservations</a>
-          </li>
-
-          <li>
-              <a href="#orders"><i class="fas fa-receipt"></i> Orders</a>
-          </li>
-
-          <li>
               <a href="#reviews"><i class="fas fa-comments"></i> Reviews</a>
-          </li>
-          <li>
-              <a href="#staff"><i class="fas fa-users"></i> Staff</a>
           </li>
           <li>
               <a href="#settings"><i class="fas fa-cog"></i> Settings</a>

@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FoodController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\Reservation;
 use App\Http\Controllers\Admin\ReservationController;
@@ -62,5 +63,10 @@ Route::group(["prefix" => "admin", "as" => "admin.", 'middleware' => ['admin']],
     Route::get('customers', [CustomerController::class, "index"])->name('customers.index');
 
     Route::get('reservations', [ReservationController::class, 'index'])->name('reservations.index');
+    Route::get('reservations/{id}/details', [ReservationController::class, 'getReservationDetails'])->name('reservations.details');
     Route::put('reservations/{id}/update-status', [ReservationController::class, 'updateReservationStatus'])->name('reservations.update-status');
+
+    Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
+    Route::put('orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
 });

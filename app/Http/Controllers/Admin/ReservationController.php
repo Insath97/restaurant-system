@@ -31,13 +31,32 @@ class ReservationController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Reservation status updated successfully',
-                'status' => $request->status
+                'status' => $reservation->status
             ]);
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to update reservation status'
+                'message' => 'Failed to update reservation status: ' . $e->getMessage()
             ], 500);
+        }
+    }
+
+    public function getReservationDetails($id)
+    {
+        try {
+            $reservation = ModelsReservation::with(['user', 'table', 'order.items.menu'])
+                ->findOrFail($id);
+
+            return response()->json([
+                'success' => true,
+                'reservation' => $reservation,
+                'has_order' => !is_null($reservation->order)
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Reservation not found'
+            ], 404);
         }
     }
 }
