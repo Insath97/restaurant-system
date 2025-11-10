@@ -19,4 +19,21 @@ class Table extends Model
             default => 'secondary',
         };
     }
+
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class);
+    }
+
+    public function scopeAvailableForReservation($query, $date, $time, $guestCount)
+    {
+        return $query->where('is_available', true)
+            ->where('status', 'available')
+            ->where('capacity', '>=', $guestCount)
+            ->whereDoesntHave('reservations', function ($q) use ($date, $time) {
+                $q->where('reservation_date', $date)
+                    ->where('reservation_time', $time)
+                    ->whereIn('status', ['pending', 'confirmed']);
+            });
+    }
 }

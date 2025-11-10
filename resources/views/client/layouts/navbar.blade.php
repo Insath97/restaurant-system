@@ -35,47 +35,43 @@
                             {{ Auth::user()->name }}
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
-                            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">
-                                    <i class="fas fa-user me-2"></i>Profile
+                            <li><a class="dropdown-item" href="{{ route('my-account') }}">
+                                    <i class="fas fa-user me-2"></i>My Account
                                 </a></li>
-                            <li><a class="dropdown-item" href="#">
-                                    <i class="fas fa-shopping-cart me-2"></i>My Orders
-                                </a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-
-                                    <a class="dropdown-item text-danger" href="#"
-                                        onclick="event.preventDefault(); this.closest('form').submit();">
-                                        <i class="fas fa-sign-out-alt me-2"></i>Logout
-                                    </a>
-
-                                </form>
-                            </li>
-                        </ul>
+                            <hr class="dropdown-divider">
                     </li>
-                @else
-                    <!-- User is not logged in - Show login/register links -->
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('login') }}">
-                            <i class="fas fa-sign-in-alt me-1"></i>Login
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register') }}">
-                            <i class="fas fa-user-plus me-1"></i>Register
-                        </a>
-                    </li>
-                @endauth
+                    <li>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
 
-                <li class="nav-item ms-2">
-                    <button class="btn btn-danger rounded-pill text-white">
-                        Reserve Table
-                    </button>
+                            <a class="dropdown-item text-danger" href="#"
+                                onclick="event.preventDefault(); this.closest('form').submit();">
+                                <i class="fas fa-sign-out-alt me-2"></i>Logout
+                            </a>
+
+                        </form>
+                    </li>
+                </ul>
                 </li>
+            @else
+                <!-- User is not logged in - Show login/register links -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('login') }}">
+                        <i class="fas fa-sign-in-alt me-1"></i>Login
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('register') }}">
+                        <i class="fas fa-user-plus me-1"></i>Register
+                    </a>
+                </li>
+            @endauth
+
+            <li class="nav-item ms-2">
+                <a class="btn btn-danger rounded-pill text-white" href="#reservation">
+                    Reserve Table
+                </a>
+            </li>
             </ul>
         </div>
     </div>

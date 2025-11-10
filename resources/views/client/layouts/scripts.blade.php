@@ -421,6 +421,7 @@
             });
         }
 
+        // Update the checkout button click handler
         if (checkoutBtn) {
             checkoutBtn.addEventListener('click', function() {
                 const isAuthenticated = $('meta[name="user-auth"]').attr('content') === 'true';
@@ -429,17 +430,31 @@
                     cart.reduce((sum, item) => sum + item.quantity, 0);
 
                 if (itemCount === 0) {
-                    alert('Your cart is empty. Please add items before proceeding to checkout.');
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Empty Cart',
+                        text: 'Your cart is empty. Please add items before proceeding to checkout.',
+                        confirmButtonText: 'OK'
+                    });
                     return;
                 }
 
                 if (isAuthenticated) {
-                    alert('Proceeding to checkout with ' + itemCount + ' items. Total: ' +
-                        cartTotalElement.textContent);
-                    // window.location.href = '/checkout';
+                    // Redirect to order type selection
+                    window.location.href = '{{ route('order-type.index') }}';
                 } else {
-                    alert('Proceeding to checkout with ' + itemCount + ' items. Total: ' +
-                        cartTotalElement.textContent);
+                    Swal.fire({
+                        icon: 'info',
+                        title: 'Login Required',
+                        text: 'Please login to proceed with checkout.',
+                        showCancelButton: true,
+                        confirmButtonText: 'Login',
+                        cancelButtonText: 'Continue as Guest'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '{{ route('login') }}';
+                        }
+                    });
                 }
             });
         }
@@ -655,5 +670,7 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             dateInput.value = tomorrow.toISOString().split('T')[0];
         }
+
+
     });
 </script>

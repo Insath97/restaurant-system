@@ -1,91 +1,26 @@
 @extends('client.layouts.master')
 
 @section('content')
-    <!-- Hero Section -->
-    @include('client.home-components.hero')
-
-    <!-- About Section -->
-    @include('client.home-components.about')
-
-    <!-- Special Offers Section -->
-    @include('client.home-components.special-offer')
-
-    <!-- Menu Section -->
-    <section id="menu" class="menu-section">
+    <!-- Reservation Header -->
+    <section class="reservation-header">
         <div class="container">
-            <h2 class="text-center section-title">Our Menu</h2>
-            <p class="text-center mb-5">Discover the rich flavors of Sri Lanka through our carefully curated menu
-                featuring traditional dishes with a modern touch.</p>
-
-            <!-- Menu Tabs -->
-            <ul class="nav nav-pills justify-content-center mb-5" id="menuTabs" role="tablist">
-                @foreach ($categories as $index => $category)
-                    <li class="nav-item" role="presentation">
-                        <button class="nav-link {{ $index === 0 ? 'active' : '' }}"
-                            id="{{ Str::slug($category->name) }}-tab" data-bs-toggle="pill"
-                            data-bs-target="#{{ Str::slug($category->name) }}" type="button">{{ $category->name }}</button>
-                    </li>
-                @endforeach
-            </ul>
-
-            <!-- Menu Content -->
-            <div class="tab-content" id="menuTabsContent">
-                @foreach ($categories as $index => $category)
-                    <div class="tab-pane fade {{ $index === 0 ? 'show active' : '' }}" id="{{ Str::slug($category->name) }}"
-                        role="tabpanel">
-                        <div class="row">
-                            @foreach ($category->menus as $menu)
-                                <div class="col-md-6 col-lg-4 fade-in">
-                                    <div class="menu-card">
-                                        <img src="{{ asset($menu->image) }}" alt="{{ $menu->name }}">
-                                        <div class="menu-card-body">
-                                            <h3 class="menu-card-title">{{ $menu->name }}</h3>
-                                            <div class="menu-card-rating">
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star"></i>
-                                                <i class="fas fa-star-half-alt"></i>
-                                            </div>
-                                            <p class="mb-3">{{ $menu->description }}</p>
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <span class="menu-card-price">Rs.
-                                                    {{ number_format($menu->price, 2) }}</span>
-                                                <button class="btn btn-add-to-cart" data-menu-id="{{ $menu->id }}"
-                                                    data-menu-name="{{ $menu->name }}"
-                                                    data-menu-price="{{ $menu->price }}"
-                                                    data-menu-image="{{ asset($menu->image) }}">
-                                                    Add to Cart
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+            <h1 class="display-4 mb-3">Book Your Table</h1>
+            <p class="lead">Reserve your spot for an authentic dining experience</p>
         </div>
     </section>
 
-    <!-- Chef Specials Section -->
-    @include('client.home-components.chef')
-
     <!-- Reservation Section -->
-    <section id="reservation" class="reservation-section">
+    <section class="py-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="reservation-form fade-in">
-                        <div class="reservation-header">
-                            <i class="fas fa-calendar-alt"></i>
-                            <h2>Make a Reservation</h2>
-                            <p>Book your table in advance to enjoy an authentic Sri Lankan dining experience. For
-                                parties of 8 or more, please call us directly.</p>
-                        </div>
+                    <div class="reservation-card">
+                        <h2 class="mb-4">Your Reservation Details</h2>
+                        <p class="mb-4">You're reserving a table for your dine-in order. Please provide the following
+                            details:</p>
 
                         <form id="reservationForm">
+                            @csrf
                             @auth
                                 <div class="row">
                                     <div class="col-md-6">
@@ -99,6 +34,15 @@
                                             value="{{ Auth::user()->email }}" readonly>
                                     </div>
                                 </div>
+                                <!-- Add this after the email field in your reservation form -->
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="customerPhone" class="form-label">Phone Number *</label>
+                                        <input type="tel" class="form-control" id="customerPhone" name="customer_phone"
+                                            required placeholder="Enter your phone number">
+                                        <div class="invalid-feedback customerPhone-error"></div>
+                                    </div>
+                                </div>
                             @else
                                 <div class="alert alert-info">
                                     Please <a href="{{ route('login') }}" class="alert-link">login</a> to make a reservation.
@@ -108,13 +52,13 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="reservationDate" class="form-label">Date *</label>
-                                    <input type="date" class="form-control" id="reservationDate" required
-                                        min="{{ date('Y-m-d', strtotime('+1 day')) }}">
+                                    <input type="date" class="form-control" id="reservationDate" name="reservation_date"
+                                        required min="{{ date('Y-m-d', strtotime('+1 day')) }}">
                                     <div class="invalid-feedback reservationDate-error"></div>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="reservationTime" class="form-label">Time *</label>
-                                    <select class="form-select" id="reservationTime" required>
+                                    <select class="form-select" id="reservationTime" name="reservation_time" required>
                                         <option value="" selected disabled>Select Time</option>
                                         <option value="11:00">11:00 AM</option>
                                         <option value="11:30">11:30 AM</option>
@@ -138,7 +82,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label for="guestCount" class="form-label">Number of Guests *</label>
-                                    <select class="form-select" id="guestCount" required>
+                                    <select class="form-select" id="guestCount" name="guest_count" required>
                                         <option value="1">1 Person</option>
                                         <option value="2" selected>2 People</option>
                                         <option value="3">3 People</option>
@@ -153,7 +97,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="tableSelect" class="form-label">Select Table *</label>
-                                    <select class="form-select" id="tableSelect" required disabled>
+                                    <select class="form-select" id="tableSelect" name="table_id" required disabled>
                                         <option value="" selected disabled>First select date, time and guests
                                         </option>
                                     </select>
@@ -164,8 +108,16 @@
 
                             <div class="mb-4">
                                 <label for="specialRequests" class="form-label">Special Requests</label>
-                                <textarea class="form-control" id="specialRequests" rows="3"
+                                <textarea class="form-control" id="specialRequests" name="special_requests" rows="3"
                                     placeholder="Any dietary restrictions, allergies, or special occasions?"></textarea>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="termsCheck" required>
+                                <label class="form-check-label" for="termsCheck">
+                                    I agree to the <a href="#" data-bs-toggle="modal"
+                                        data-bs-target="#termsModal">Reservation Policy</a>
+                                </label>
                             </div>
 
                             <div class="text-center">
@@ -186,12 +138,116 @@
         </div>
     </section>
 
-    <!-- Gallery Section -->
-    @include('client.home-components.gallery')
+    <!-- Order Summary Sidebar -->
+    <div class="offcanvas offcanvas-end" tabindex="-1" id="orderSummary" aria-labelledby="orderSummaryLabel">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="orderSummaryLabel">Your Order</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div class="mb-4">
+                <h6>Items ({{ $cart->items->sum('quantity') }})</h6>
 
-    <!-- Testimonials Section -->
-    @include('client.home-components.testimonial')
+                @foreach ($cart->items as $item)
+                    <div class="d-flex justify-content-between py-2 border-bottom">
+                        <div>
+                            <p class="mb-0">{{ $item->menu->name }}</p>
+                            <small class="text-muted">{{ $item->quantity }} x Rs.
+                                {{ number_format($item->price, 2) }}</small>
+                        </div>
+                        <span>Rs. {{ number_format($item->price * $item->quantity, 2) }}</span>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="mb-4">
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span>Rs. {{ number_format($cart->subtotal, 2) }}</span>
+                </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span>Service Charge (10%):</span>
+                    <span>Rs. {{ number_format($cart->service_charge, 2) }}</span>
+                </div>
+                <div class="d-flex justify-content-between fw-bold">
+                    <span>Total:</span>
+                    <span>Rs. {{ number_format($cart->total, 2) }}</span>
+                </div>
+            </div>
+
+            <button class="btn btn-outline-secondary w-100 mb-3" data-bs-toggle="modal" data-bs-target="#editOrderModal">
+                <i class="fas fa-edit me-2"></i> Edit Order
+            </button>
+        </div>
+    </div>
+
+    <!-- Terms Modal -->
+    <div class="modal fade" id="termsModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reservation Policy</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Reservation Duration</h6>
+                    <p>Tables are reserved for 2 hours. Extensions may be possible depending on availability.</p>
+
+                    <h6 class="mt-4">Cancellation</h6>
+                    <p>Please cancel at least 2 hours before your reservation time to avoid a cancellation fee.</p>
+
+                    <h6 class="mt-4">Late Arrivals</h6>
+                    <p>We hold reservations for 15 minutes past the booked time. After that, your table may be given to
+                        waiting guests.</p>
+
+                    <h6 class="mt-4">Special Requests</h6>
+                    <p>While we try to accommodate all requests, we cannot guarantee specific tables or arrangements.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-spice" data-bs-dismiss="modal">I Understand</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Order Modal -->
+    <div class="modal fade" id="editOrderModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Your Order</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>To edit your order items, you'll need to return to your cart. Your reservation details will be saved.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <a href="{{ route('cart.get') }}" class="btn btn-spice">Go to Cart</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" id="toastContainer"></div>
+
+    <!-- Floating Order Summary Button -->
+    <button class="btn btn-spice position-fixed" style="bottom: 30px; right: 30px; z-index: 1000;"
+        data-bs-toggle="offcanvas" data-bs-target="#orderSummary" aria-controls="orderSummary">
+        <i class="fas fa-shopping-bag me-2"></i> View Order
+    </button>
 @endsection
+
+@push('styles')
+    <style>
+        /* Hide cart toggle button on reservation page */
+        .cart-toggle {
+            display: none !important;
+        }
+    </style>
+@endpush
 
 @push('script')
     <script>
@@ -206,11 +262,15 @@
             const submitText = submitBtn.find('.submit-text');
             const spinner = submitBtn.find('.spinner-border');
             const specialRequests = $('#specialRequests');
+            const customerPhone = $('#customerPhone'); // Add this
 
             // Set minimum date to tomorrow
             const tomorrow = new Date();
             tomorrow.setDate(tomorrow.getDate() + 1);
             dateInput.attr('min', tomorrow.toISOString().split('T')[0]);
+
+            // Set default date to tomorrow
+            dateInput.val(tomorrow.toISOString().split('T')[0]);
 
             // Function to check availability and load tables
             function checkAvailability() {
@@ -309,58 +369,97 @@
                 }
             });
 
-            // Form submission - FIXED to prevent page reload
+            // Form submission - UPDATED for complete order processing
             reservationForm.on('submit', function(e) {
                 e.preventDefault();
-                e.stopPropagation(); // Prevent event bubbling
+                e.stopPropagation();
 
                 // Clear previous errors
                 reservationForm.find('.is-invalid').removeClass('is-invalid');
                 reservationForm.find('.invalid-feedback').text('');
 
+                let hasErrors = false;
+
                 // Basic validation
-                if (!dateInput.val() || !timeInput.val() || !guestInput.val()) {
-                    showToast('Please fill all required fields', 'error');
-                    return false;
+                if (!dateInput.val()) {
+                    dateInput.addClass('is-invalid');
+                    $('.reservationDate-error').text('Please select a reservation date');
+                    hasErrors = true;
+                }
+
+                if (!timeInput.val()) {
+                    timeInput.addClass('is-invalid');
+                    $('.reservationTime-error').text('Please select a reservation time');
+                    hasErrors = true;
+                }
+
+                if (!guestInput.val()) {
+                    guestInput.addClass('is-invalid');
+                    $('.guestCount-error').text('Please select number of guests');
+                    hasErrors = true;
+                }
+
+                if (!customerPhone.val()) {
+                    customerPhone.addClass('is-invalid');
+                    $('.customerPhone-error').text('Please enter your phone number');
+                    hasErrors = true;
                 }
 
                 if (!tableSelect.val() || tableSelect.prop('disabled')) {
-                    showToast('Please select an available table', 'error');
+                    tableSelect.addClass('is-invalid');
+                    $('.tableSelect-error').text('Please select an available table');
+                    hasErrors = true;
+                }
+
+                if (!$('#termsCheck').is(':checked')) {
+                    showToast('Please agree to the reservation policy', 'error');
+                    hasErrors = true;
+                }
+
+                if (hasErrors) {
+                    showToast('Please fill all required fields correctly', 'error');
                     return false;
                 }
 
                 // Show loading state
-                submitText.text('Processing...');
+                submitText.text('Processing Order...');
                 spinner.removeClass('d-none');
                 submitBtn.prop('disabled', true);
 
-                // Prepare form data
+                // Prepare form data for COMPLETE order processing
                 const formData = {
                     table_id: tableSelect.val(),
                     reservation_date: dateInput.val(),
                     reservation_time: timeInput.val(),
                     guest_count: guestInput.val(),
+                    customer_phone: customerPhone.val(), // Add phone
                     special_requests: specialRequests.val(),
+                    order_type: 'dine_in', // Set order type
+                    payment_method: 'cash_on_delivery', // Set payment method
                     _token: '{{ csrf_token() }}'
                 };
 
-                console.log('Submitting reservation:', formData);
+                console.log('Submitting complete order:', formData);
 
                 $.ajax({
-                    url: '{{ route('reservation.store') }}',
+                    url: '{{ route('reservation.complete-order') }}', // New route for complete processing
                     method: 'POST',
                     data: formData,
                     dataType: 'json',
                     success: function(response) {
-                        console.log('Reservation response:', response);
+                        console.log('Order response:', response);
 
                         if (response.success) {
                             showSuccessMessage(response.message ||
-                                'Reservation created successfully!');
-                            resetForm();
+                                'Order confirmed successfully!');
+
+                            // Redirect to order success page
+                            setTimeout(() => {
+                                window.location.href = response.redirect_url;
+                            }, 2000);
                         } else {
                             // Show specific error message from server
-                            showToast(response.message || 'Failed to create reservation',
+                            showToast(response.message || 'Failed to create order',
                                 'error');
 
                             // Reset button state on failure
@@ -368,7 +467,7 @@
                         }
                     },
                     error: function(xhr, status, error) {
-                        console.error('Reservation error:', xhr.responseText);
+                        console.error('Order error:', xhr.responseText);
 
                         // Reset button state
                         resetButtonState();
@@ -403,7 +502,7 @@
                                 showToast('Invalid request', 'error');
                             }
                         } else {
-                            let errorMsg = 'An error occurred while creating reservation';
+                            let errorMsg = 'An error occurred while processing your order';
                             try {
                                 const response = JSON.parse(xhr.responseText);
                                 if (response.message) {
@@ -418,7 +517,6 @@
                     }
                 });
 
-                // Return false to prevent default form submission
                 return false;
             });
 
@@ -429,13 +527,9 @@
                     title: 'Success!',
                     text: message,
                     confirmButtonText: 'OK',
-                    confirmButtonColor: '#dc3545',
-                    timer: 5000,
-                    timerProgressBar: true,
-                    didClose: () => {
-                        // Optional: You can redirect to reservations page or do other actions
-                        window.reload();
-                    }
+                    confirmButtonColor: '#28a745',
+                    timer: 3000,
+                    timerProgressBar: true
                 });
             }
 
@@ -461,33 +555,9 @@
 
             // Helper function to reset button state
             function resetButtonState() {
-                submitText.text('Confirm Reservation');
+                submitText.text('Confirm Reservation & Order');
                 spinner.addClass('d-none');
                 submitBtn.prop('disabled', false);
-            }
-
-            // Helper function to reset form
-            function resetForm() {
-                // Reset form fields but keep user info
-                dateInput.val('');
-                timeInput.val('');
-                guestInput.val('2'); // Reset to default 2 people
-                tableSelect.html('<option value="" selected disabled>First select date, time and guests</option>');
-                tableSelect.prop('disabled', true);
-                tableInfo.text('');
-                specialRequests.val('');
-
-                // Reset button state
-                resetButtonState();
-
-                // Reset date min to tomorrow
-                const tomorrow = new Date();
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                dateInput.attr('min', tomorrow.toISOString().split('T')[0]);
-
-                // Clear any validation errors
-                reservationForm.find('.is-invalid').removeClass('is-invalid');
-                reservationForm.find('.invalid-feedback').text('');
             }
 
             // Real-time validation for date (prevent past dates)
@@ -515,22 +585,12 @@
                 }
             });
 
-            // Initialize date restrictions
-            function initializeDateRestrictions() {
-                const today = new Date();
-                const tomorrow = new Date(today);
-                tomorrow.setDate(today.getDate() + 1);
-
-                dateInput.attr('min', tomorrow.toISOString().split('T')[0]);
-
-                // Disable past dates in date picker
-                dateInput.on('keydown', function(e) {
-                    e.preventDefault();
-                    return false;
-                });
-            }
-
             initializeDateRestrictions();
+
+            // Initial check for availability if all fields are filled
+            if (dateInput.val() && timeInput.val() && guestInput.val()) {
+                checkAvailability();
+            }
         });
     </script>
 @endpush

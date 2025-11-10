@@ -17,6 +17,24 @@ Route::middleware('auth')->group(function () {
     Route::get('cart', [CustomerController::class, 'getCart'])->name('cart.get');
     Route::delete('cart/remove', [CustomerController::class, 'removeFromCart'])->name('cart.remove');
     Route::put('cart/update', [CustomerController::class, 'updateCart'])->name('cart.update');
+
+    Route::post('reservation/available-tables', [CustomerController::class, 'getAvailableTables'])->name('reservation.available-tables');
+    Route::get('reservation/create', [CustomerController::class, 'createReservation'])->name('reservation.create');
+    Route::post('reservation', [CustomerController::class, 'makeReservationTable'])->name('reservation.store');
+    Route::post('reservation/{id}/cancel', [CustomerController::class, 'cancelReservation'])->name('reservation.cancel');
+    Route::post('reservation/complete-order', [CustomerController::class, 'completeDineInOrder'])->name('reservation.complete-order');
+
+    // Order routes
+    Route::get('order-type', [CustomerController::class, 'orderType'])->name('order-type.index');
+    Route::post('order-type/select', [CustomerController::class, 'selectOrderType'])->name('order-type.select');
+
+    Route::get('checkout', [CustomerController::class, 'checkout'])->name('checkout');
+
+    Route::post('checkout', [CustomerController::class, 'processCheckout'])->name('checkout.process');
+
+    Route::get('order-success/{order}', [CustomerController::class, 'orderSuccess'])->name('order.success');
+
+    Route::get('my-account', [CustomerController::class, 'myaccount'])->name('my-account');
 });
 
 require __DIR__ . '/auth.php';

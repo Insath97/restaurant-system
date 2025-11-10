@@ -6,6 +6,8 @@ use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\PermissionController;
+use App\Http\Controllers\Admin\Reservation;
+use App\Http\Controllers\Admin\ReservationController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\Admin\UserRoleController;
@@ -58,4 +60,7 @@ Route::group(["prefix" => "admin", "as" => "admin.", 'middleware' => ['admin']],
 
     /* customer management */
     Route::get('customers', [CustomerController::class, "index"])->name('customers.index');
+
+    Route::get('reservations', [ReservationController::class, 'index'])->name('reservations.index');
+    Route::put('reservations/{id}/update-status', [ReservationController::class, 'updateReservationStatus'])->name('reservations.update-status');
 });
