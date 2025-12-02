@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\Admin\Reservation;
 use App\Http\Controllers\Admin\ReservationController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\TableController;
 use App\Http\Controllers\Admin\UserRoleController;
@@ -69,4 +70,6 @@ Route::group(["prefix" => "admin", "as" => "admin.", 'middleware' => ['admin']],
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::put('orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('orders.update-status');
+
+    Route::get('reviews', [ReviewController::class, 'index'])->name('reviews.index');
 });

@@ -8,6 +8,11 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['permission:Customer Index,admin'])->only(['index']);
+    }
+
     public function index()
     {
         $customers = User::all();

@@ -1,5 +1,8 @@
 <?php
 
+use App\Models\Order;
+use App\Models\Reservation;
+
 function setSidebarActive(array $routes): ?string
 {
     foreach ($routes as $route) {
@@ -40,4 +43,27 @@ function getRole()
 {
     $role = auth()->guard('admin')->user()->getRoleNames();
     return $role->first();
+}
+
+if (!function_exists('canReviewItem')) {
+    function canReviewItem($itemType, $itemId, $userId)
+    {
+        if ($itemType === 'order') {
+            $order = Order::where('id', $itemId)
+                ->where('user_id', $userId)
+                ->first();
+
+            return $order && in_array($order->status, ['completed', 'delivered', 'ready']);
+        }
+
+        if ($itemType === 'reservation') {
+            $reservation = Reservation::where('id', $itemId)
+                ->where('user_id', $userId)
+                ->first();
+
+            return $reservation && $reservation->status === 'completed';
+        }
+
+        return false;
+    }
 }

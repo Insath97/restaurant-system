@@ -9,6 +9,7 @@ use App\Models\Menu;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Reservation;
+use App\Models\Review;
 use App\Models\Table;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -64,7 +65,10 @@ class CustomerController extends Controller
             ->get();
 
         // Get user's reviews (you'll need to implement this based on your review system)
-        $reviews = []; // Placeholder - implement based on your review system
+        $reviews = Review::with(['reviewable'])
+            ->where('user_id', $user->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
 
         return view('client.my-account', compact('user', 'reservations', 'orders', 'reviews'));
     }
@@ -768,6 +772,98 @@ class CustomerController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to process order: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function storeReview(Request $request)
+    {
+        try {
+            $request->validate([
+                'reviewable_type' => 'required|in:App\Models\Order,App\Models\Reservation',
+                'reviewable_id' => 'required|integer',
+                'review_title' => 'required|string|max:255',
+                'comment' => 'required|string|min:10',
+                'rating' => 'required|integer|between:1,5',
+                'food_quality' => 'nullable|integer|between:1,5',
+                'service_quality' => 'nullable|integer|between:1,5',
+                'ambiance' => 'nullable|integer|between:1,5',
+                'would_recommend' => 'nullable|boolean',
+            ]);
+
+            $user = Auth::user();
+
+            // Check if already reviewed
+            $existingReview = Review::where('user_id', $user->id)
+                ->where('reviewable_type', $request->reviewable_type)
+                ->where('reviewable_id', $request->reviewable_id)
+                ->first();
+
+            if ($existingReview) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You have already reviewed this item.'
+                ], 422);
+            }
+
+            // Verify ownership and completion status
+            $canReview = false;
+
+            if ($request->reviewable_type === 'App\Models\Order') {
+                $order = Order::where('id', $request->reviewable_id)
+                    ->where('user_id', $user->id)
+                    ->first();
+
+                if ($order && $order->status === 'completed') {
+                    $canReview = true;
+                }
+            } elseif ($request->reviewable_type === 'App\Models\Reservation') {
+                $reservation = Reservation::where('id', $request->reviewable_id)
+                    ->where('user_id', $user->id)
+                    ->first();
+
+                if ($reservation && $reservation->status === 'completed') {
+                    $canReview = true;
+                }
+            }
+
+            if (!$canReview) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot review this item. Please complete it first.'
+                ], 403);
+            }
+
+            // Create review
+            $review = Review::create([
+                'user_id' => $user->id,
+                'reviewable_type' => $request->reviewable_type,
+                'reviewable_id' => $request->reviewable_id,
+                'review_title' => $request->review_title,
+                'comment' => $request->comment,
+                'rating' => $request->rating,
+                'food_quality' => $request->food_quality,
+                'service_quality' => $request->service_quality,
+                'ambiance' => $request->ambiance,
+                'would_recommend' => $request->boolean('would_recommend'),
+                'is_approved' => true,
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Review submitted successfully!',
+                'review' => $review
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed.',
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to submit review. Please try again.'
             ], 500);
         }
     }

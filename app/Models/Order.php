@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -53,6 +54,11 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
     public function statusColor(): string
     {
         return match ($this->status) {
@@ -96,5 +102,18 @@ class Order extends Model
         $lastOrder = self::whereDate('created_at', today())->count();
 
         return $prefix . '-' . $date . '-' . str_pad($lastOrder + 1, 4, '0', STR_PAD_LEFT);
+    }
+
+    public function getHasReviewAttribute(): bool
+    {
+        $user = Auth::user();
+        if (!$user) return false;
+
+        return $this->reviews()->where('user_id', $user->id)->exists();
+    }
+
+    public function getUserReviewAttribute()
+    {
+        return $this->reviews()->where('user_id', Auth::user()?->id)->first();
     }
 }

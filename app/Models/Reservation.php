@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Reservation extends Model
 {
@@ -39,6 +40,11 @@ class Reservation extends Model
         return $this->hasOne(Order::class);
     }
 
+    public function reviews()
+    {
+        return $this->morphMany(Review::class, 'reviewable');
+    }
+
     public function statusColor(): string
     {
         return match ($this->status) {
@@ -68,5 +74,18 @@ class Reservation extends Model
                     ->where('reservation_time', $time)
                     ->whereIn('status', ['pending', 'confirmed']);
             });
+    }
+
+    public function getHasReviewAttribute(): bool
+    {
+        $user = Auth::user();
+        if (!$user) return false;
+
+        return $this->reviews()->where('user_id', $user->id)->exists();
+    }
+
+    public function getUserReviewAttribute()
+    {
+        return $this->reviews()->where('user_id', Auth::user()?->id)->first();
     }
 }

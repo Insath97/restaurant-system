@@ -35,6 +35,8 @@ Route::middleware('auth')->group(function () {
     Route::get('order-success/{order}', [CustomerController::class, 'orderSuccess'])->name('order.success');
 
     Route::get('my-account', [CustomerController::class, 'myaccount'])->name('my-account');
+
+    Route::post('reviews', [CustomerController::class, 'storeReview'])->name('reviews.store');
 });
 
 require __DIR__ . '/auth.php';

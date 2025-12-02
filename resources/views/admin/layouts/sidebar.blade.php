@@ -6,52 +6,73 @@
       </div>
       <ul class="sidebar-menu">
 
-          <li class="{{ setSidebarActive(['admin.dashboard.*']) }}">
-              <a href="{{ route('admin.dashboard.index') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-          </li>
+          @if (canAccess(['Dashboard Access']))
+              <li class="{{ setSidebarActive(['admin.dashboard.*']) }}">
+                  <a href="{{ route('admin.dashboard.index') }}"><i class="fas fa-home"></i> Dashboard</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.reservations.*']) }}">
-              <a href="{{ route('admin.reservations.index') }}"><i class="fas fa-calendar-check"></i> Reservation</a>
-          </li>
+          @if (canAccess(['Reservation Index', 'Reservation View', 'Reservation Update']))
+              <li class="{{ setSidebarActive(['admin.reservations.*']) }}">
+                  <a href="{{ route('admin.reservations.index') }}"><i class="fas fa-calendar-alt"></i> Reservation
+                      Management</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.orders.*']) }}">
-              <a href="{{ route('admin.orders.index') }}"><i class="fas fa-shopping-bag"></i> Orders</a>
-          </li>
+          <!-- Order Management -->
+          @if (canAccess(['Order Index', 'Order View', 'Order Update']))
+              <li class="{{ setSidebarActive(['admin.orders.*']) }}">
+                  <a href="{{ route('admin.orders.index') }}"><i class="fas fa-shopping-bag"></i> Order Management</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.customers.*']) }}">
-              <a href="{{ route('admin.customers.index') }}"><i class="fas fa-user-friends"></i> Customer Management</a>
-          </li>
+          @if (canAccess(['Customer Index', 'Customer View']))
+              <li class="{{ setSidebarActive(['admin.customers.*']) }}">
+                  <a href="{{ route('admin.customers.index') }}"><i class="fas fa-users"></i> Customer Management</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.menus.*']) }}">
-              <a href="{{ route('admin.menus.index') }}"><i class="fas fa-utensils"></i> Menu Management</a>
-          </li>
+          @if (canAccess(['Food Index', 'Food Create', 'Food Update', 'Food Delete']))
+              <li class="{{ setSidebarActive(['admin.menus.*']) }}">
+                  <a href="{{ route('admin.menus.index') }}"><i class="fas fa-utensils"></i> Food Management</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.categories.*']) }}">
-              <a href="{{ route('admin.categories.index') }}"><i class="fas fa-tags"></i> Category Management</a>
-          </li>
+          @if (canAccess(['Category Index', 'Category Create', 'Category Update', 'Category Delete']))
+              <li class="{{ setSidebarActive(['admin.categories.*']) }}">
+                  <a href="{{ route('admin.categories.index') }}"><i class="fas fa-list"></i> Category Management</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.tables.*']) }}">
-              <a href="{{ route('admin.tables.index') }}"><i class="fas fa-table"></i> Table Management</a>
-          </li>
+          <!-- Table Management -->
+          @if (canAccess(['Table Index', 'Table Create', 'Table Update', 'Table Delete']))
+              <li class="{{ setSidebarActive(['admin.tables.*']) }}">
+                  <a href="{{ route('admin.tables.index') }}"><i class="fas fa-chair"></i> Table Management</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.permissions.*']) }}">
-              <a href="{{ route('admin.permissions.index') }}"><i class="fas fa-key"></i> Permission Management</a>
-          </li>
+          @if (canAccess(['Permission Index', 'Permission Create', 'Permission Update', 'Permission Delete']))
+              <li class="{{ setSidebarActive(['admin.permissions.*']) }}">
+                  <a href="{{ route('admin.permissions.index') }}"><i class="fas fa-key"></i> Permission Management</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.roles.*']) }}">
-              <a href="{{ route('admin.roles.index') }}"><i class="fas fa-user-shield"></i> Roles Management</a>
-          </li>
+          @if (canAccess(['Role Index', 'Role Create', 'Role Update', 'Role Delete']))
+              <li class="{{ setSidebarActive(['admin.roles.*']) }}">
+                  <a href="{{ route('admin.roles.index') }}"><i class="fas fa-user-shield"></i> Roles Management</a>
+              </li>
+          @endif
 
-          <li class="{{ setSidebarActive(['admin.users.*']) }}">
-              <a href="{{ route('admin.users.index') }}"><i class="fas fa-users"></i> User Management</a>
-          </li>
+          @if (canAccess(['User Index', 'User Create', 'User Update', 'User Delete']))
+              <li class="{{ setSidebarActive(['admin.users.*']) }}">
+                  <a href="{{ route('admin.users.index') }}"><i class="fas fa-users"></i> User Management</a>
+              </li>
+          @endif
 
-          {{-- ################################## --}}
-          <li>
-              <a href="#reviews"><i class="fas fa-comments"></i> Reviews</a>
-          </li>
-          <li>
-              <a href="#settings"><i class="fas fa-cog"></i> Settings</a>
-          </li>
+          @if (canAccess(['Review Index']))
+              <li class="{{ setSidebarActive(['admin.reviews.*']) }}">
+                  <a href="{{ route('admin.reviews.index') }}"><i class="fas fa-star"></i> Review Management</a>
+              </li>
+          @endif
       </ul>
   </nav>

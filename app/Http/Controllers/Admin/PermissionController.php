@@ -10,6 +10,14 @@ use Spatie\Permission\Models\Permission;
 
 class PermissionController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['permission:Permission Index,admin'])->only(['index']);
+        $this->middleware(['permission:Permission Create,admin'])->only(['store']);
+        $this->middleware(['permission:Permission Update,admin'])->only(['update']);
+        $this->middleware(['permission:Permission Delete,admin'])->only('destroy');
+    }
+
     public function index()
     {
         $permissions = Permission::all();

@@ -8,6 +8,13 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['permission:Order Index,admin'])->only(['index']);
+        $this->middleware(['permission:Order View,admin'])->only(['show']);
+        $this->middleware(['permission:Order Update,admin'])->only(['updateStatus']);
+    }
+
     public function index()
     {
         $orders = Order::with(['user', 'reservation.table', 'items.menu'])

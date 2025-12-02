@@ -15,6 +15,14 @@ class FoodController extends Controller
 {
     use FileUploadTrait;
 
+    public function __construct()
+    {
+        $this->middleware(['permission:Menu Index,admin'])->only(['index']);
+        $this->middleware(['permission:Menu Create,admin'])->only(['create', 'store']);
+        $this->middleware(['permission:Menu Update,admin'])->only(['edit', 'update']);
+        $this->middleware(['permission:Menu Delete,admin'])->only(['destroy']);
+    }
+
     public function index()
     {
         $categories = Category::all();

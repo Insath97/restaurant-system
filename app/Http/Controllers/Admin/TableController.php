@@ -10,6 +10,14 @@ use Illuminate\Http\Request;
 
 class TableController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['permission:Table Index,admin'])->only(['index']);
+        $this->middleware(['permission:Table Create,admin'])->only(['create', 'store']);
+        $this->middleware(['permission:Table Update,admin'])->only(['edit', 'update']);
+        $this->middleware(['permission:Table Delete,admin'])->only(['destroy']);
+    }
+    
     public function index()
     {
         $tables = Table::all();

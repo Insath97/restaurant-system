@@ -139,32 +139,32 @@
                         <div class="d-flex justify-content-between">
                             <span>Average Rating</span>
                             <strong class="text-primary-custom">
-                                {{--  {{ number_format(\App\Models\Review::avg('rating') ?? 0, 1) }} --}} / 5
+                                {{ number_format(\App\Models\Review::avg('rating') ?? 0, 1) }} / 5
                             </strong>
                         </div>
                     </div>
                     <div class="review-summary-item mb-2">
                         <div class="d-flex justify-content-between">
                             <span>5 Star Reviews</span>
-                            <span>{{-- {{ \App\Models\Review::where('rating', 5)->count() }} --}}</span>
+                            <span> {{ \App\Models\Review::where('rating', 5)->count() }} </span>
                         </div>
                     </div>
                     <div class="review-summary-item mb-2">
                         <div class="d-flex justify-content-between">
                             <span>4 Star Reviews</span>
-                            <span>{{-- {{ \App\Models\Review::where('rating', 4)->count() }} --}}</span>
+                            <span>{{ \App\Models\Review::where('rating', 4)->count() }}</span>
                         </div>
                     </div>
                     <div class="review-summary-item mb-2">
                         <div class="d-flex justify-content-between">
                             <span>3 Star Reviews</span>
-                            <span>{{-- {{ \App\Models\Review::where('rating', 3)->count() }} --}}</span>
+                            <span> {{ \App\Models\Review::where('rating', 3)->count() }} </span>
                         </div>
                     </div>
                     <div class="review-summary-item">
                         <div class="d-flex justify-content-between">
                             <span>New Reviews (Today)</span>
-                            <span>{{-- {{ \App\Models\Review::whereDate('created_at', today())->count() }} --}}</span>
+                            <span> {{ \App\Models\Review::whereDate('created_at', today())->count() }} </span>
                         </div>
                     </div>
                 </div>
@@ -310,7 +310,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Recent Reviews</h5>
-                    <a href="#" class="btn btn-sm btn-primary-custom">View All</a>
+                    <a href="{{ route('admin.reviews.index') }}" class="btn btn-sm btn-primary-custom">View All</a>
                 </div>
                 <div class="card-body">
                     <div class="table-responsive">
@@ -323,7 +323,7 @@
                                     <th>Date</th>
                                 </tr>
                             </thead>
-                        {{--     <tbody>
+                            <tbody>
                                 @foreach (\App\Models\Review::with('user')->latest()->take(5)->get() as $review)
                                     <tr>
                                         <td>{{ $review->user->name ?? 'Anonymous' }}</td>
@@ -348,7 +348,7 @@
                                         <td>{{ $review->created_at->format('M d, Y') }}</td>
                                     </tr>
                                 @endforeach
-                            </tbody> --}}
+                            </tbody>
                         </table>
                     </div>
                 </div>

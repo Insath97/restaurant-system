@@ -8,6 +8,12 @@ use App\Models\Reservation as ModelsReservation;
 
 class ReservationController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['permission:Reservation Index,admin'])->only(['index']);
+        $this->middleware(['permission:Reservation Update,admin'])->only(['updateReservationStatus', 'getReservationDetails']);
+    }
+    
     public function index()
     {
         $reservations = ModelsReservation::with('user', 'table')

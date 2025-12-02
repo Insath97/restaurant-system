@@ -9,6 +9,13 @@ class Table extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'name',
+        'capacity',
+        'status',
+        'is_available',
+    ];
+
     public function statusColor(): string
     {
         return match ($this->status) {
