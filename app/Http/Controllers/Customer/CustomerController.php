@@ -51,24 +51,24 @@ class CustomerController extends Controller
     {
         $user = Auth::user();
 
-        // Get user's reservations
+        // Get user's reservations with pagination (5 per page)
         $reservations = Reservation::with('table')
             ->where('user_id', $user->id)
             ->orderBy('reservation_date', 'desc')
             ->orderBy('reservation_time', 'desc')
-            ->get();
+            ->paginate(2, ['*'], 'reservations_page');
 
-        // Get user's orders (you'll need to implement this based on your order system)
-        $orders = Order::with(['items', 'reservation'])
+        // Get user's orders with pagination (5 per page)
+        $orders = Order::with(['items.menu', 'reservation'])
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(2, ['*'], 'orders_page');
 
-        // Get user's reviews (you'll need to implement this based on your review system)
+        // Get user's reviews with pagination (5 per page)
         $reviews = Review::with(['reviewable'])
             ->where('user_id', $user->id)
             ->orderBy('created_at', 'desc')
-            ->get();
+            ->paginate(3, ['*'], 'reviews_page');
 
         return view('client.my-account', compact('user', 'reservations', 'orders', 'reviews'));
     }

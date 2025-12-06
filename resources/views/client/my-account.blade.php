@@ -11,7 +11,7 @@
                 <div class="col-lg-10 text-center text-lg-start">
                     <h1>Welcome Back, {{ Auth::user()->name }}</h1>
                     <p class="lead mb-0">Member since {{ Auth::user()->created_at->format('F Y') }} |
-                        {{ count($reservations) }} Reservations | {{ count($reviews) }} Reviews</p>
+                        {{ $reservations->total() }} Reservations | {{ $reviews->total() }} Reviews | {{ $orders->total() }} Orders</p>
                 </div>
             </div>
         </div>
@@ -28,16 +28,25 @@
                             <a class="nav-link active" id="reservations-tab" data-bs-toggle="tab" href="#reservations"
                                 role="tab">
                                 <i class="fas fa-calendar-alt me-2"></i>My Reservations
+                                @if($reservations->total() > 0)
+                                    <span class="badge bg-danger ms-2">{{ $reservations->total() }}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders" role="tab">
                                 <i class="fas fa-history me-2"></i>Order History
+                                @if($orders->total() > 0)
+                                    <span class="badge bg-danger ms-2">{{ $orders->total() }}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" id="reviews-tab" data-bs-toggle="tab" href="#reviews" role="tab">
                                 <i class="fas fa-star me-2"></i>My Reviews
+                                @if($reviews->total() > 0)
+                                    <span class="badge bg-danger ms-2">{{ $reviews->total() }}</span>
+                                @endif
                             </a>
                         </li>
                         <li class="nav-item">
@@ -65,7 +74,12 @@
                     <!-- Reservations Tab -->
                     <div class="tab-pane fade show active" id="reservations" role="tabpanel">
                         <div class="account-card">
-                            <h3>My Reservations</h3>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="mb-0">My Reservations</h3>
+                                @if($reservations->total() > 0)
+                                    <span class="text-muted">Showing {{ $reservations->firstItem() }} to {{ $reservations->lastItem() }} of {{ $reservations->total() }} reservations</span>
+                                @endif
+                            </div>
 
                             @if ($reservations->count() > 0)
                                 @foreach ($reservations as $reservation)
@@ -167,6 +181,11 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                <!-- Pagination for Reservations -->
+                                <div class="mt-4">
+                                    {{ $reservations->withQueryString()->fragment('reservations')->links('pagination::bootstrap-5') }}
+                                </div>
                             @else
                                 <div class="text-center py-5">
                                     <i class="fas fa-calendar-times fa-3x text-muted mb-3"></i>
@@ -181,7 +200,12 @@
                     <!-- Orders Tab -->
                     <div class="tab-pane fade" id="orders" role="tabpanel">
                         <div class="account-card">
-                            <h3>Order History</h3>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="mb-0">Order History</h3>
+                                @if($orders->total() > 0)
+                                    <span class="text-muted">Showing {{ $orders->firstItem() }} to {{ $orders->lastItem() }} of {{ $orders->total() }} orders</span>
+                                @endif
+                            </div>
 
                             @if ($orders->count() > 0)
                                 @foreach ($orders as $order)
@@ -274,6 +298,11 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                <!-- Pagination for Orders -->
+                                <div class="mt-4">
+                                    {{ $orders->withQueryString()->fragment('orders')->links('pagination::bootstrap-5') }}
+                                </div>
                             @else
                                 <div class="text-center py-5">
                                     <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
@@ -288,7 +317,12 @@
                     <!-- Reviews Tab -->
                     <div class="tab-pane fade" id="reviews" role="tabpanel">
                         <div class="account-card">
-                            <h3>Your Reviews</h3>
+                            <div class="d-flex justify-content-between align-items-center mb-4">
+                                <h3 class="mb-0">Your Reviews</h3>
+                                @if($reviews->total() > 0)
+                                    <span class="text-muted">Showing {{ $reviews->firstItem() }} to {{ $reviews->lastItem() }} of {{ $reviews->total() }} reviews</span>
+                                @endif
+                            </div>
 
                             @if ($reviews->count() > 0)
                                 @foreach ($reviews as $review)
@@ -351,6 +385,11 @@
                                         </div>
                                     </div>
                                 @endforeach
+
+                                <!-- Pagination for Reviews -->
+                                <div class="mt-4">
+                                    {{ $reviews->withQueryString()->fragment('reviews')->links('pagination::bootstrap-5') }}
+                                </div>
                             @else
                                 <div class="text-center py-5">
                                     <i class="fas fa-star fa-3x text-muted mb-3"></i>
@@ -389,8 +428,9 @@
                         <!-- Rating -->
                         <div class="mb-4">
                             <label class="form-label">Overall Rating <span class="text-danger">*</span></label>
-                            <div class="rating-stars">
+                            <div class="rating-container">
                                 <div class="stars-input">
+                                    <!-- REVERSED ORDER: 5 is first, 1 is last -->
                                     <input type="radio" id="star5" name="rating" value="5" required>
                                     <label for="star5" class="star-label"><i class="fas fa-star"></i></label>
                                     <input type="radio" id="star4" name="rating" value="4">
@@ -424,63 +464,6 @@
                                 placeholder="Share your experience with us..." required></textarea>
                         </div>
 
-                        <!-- Food Quality (for orders) -->
-                        <div class="mb-3" id="food-quality-section" style="display: none;">
-                            <label class="form-label">Food Quality</label>
-                            <div class="rating-stars">
-                                <div class="stars-input">
-                                    <input type="radio" id="food5" name="food_quality" value="5">
-                                    <label for="food5" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="food4" name="food_quality" value="4">
-                                    <label for="food4" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="food3" name="food_quality" value="3">
-                                    <label for="food3" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="food2" name="food_quality" value="2">
-                                    <label for="food2" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="food1" name="food_quality" value="1">
-                                    <label for="food1" class="star-label"><i class="fas fa-star"></i></label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Service Quality (for reservations) -->
-                        <div class="mb-3" id="service-quality-section" style="display: none;">
-                            <label class="form-label">Service Quality</label>
-                            <div class="rating-stars">
-                                <div class="stars-input">
-                                    <input type="radio" id="service5" name="service_quality" value="5">
-                                    <label for="service5" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="service4" name="service_quality" value="4">
-                                    <label for="service4" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="service3" name="service_quality" value="3">
-                                    <label for="service3" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="service2" name="service_quality" value="2">
-                                    <label for="service2" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="service1" name="service_quality" value="1">
-                                    <label for="service1" class="star-label"><i class="fas fa-star"></i></label>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Ambiance (for reservations) -->
-                        <div class="mb-3" id="ambiance-section" style="display: none;">
-                            <label class="form-label">Ambiance</label>
-                            <div class="rating-stars">
-                                <div class="stars-input">
-                                    <input type="radio" id="ambiance5" name="ambiance" value="5">
-                                    <label for="ambiance5" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="ambiance4" name="ambiance" value="4">
-                                    <label for="ambiance4" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="ambiance3" name="ambiance" value="3">
-                                    <label for="ambiance3" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="ambiance2" name="ambiance" value="2">
-                                    <label for="ambiance2" class="star-label"><i class="fas fa-star"></i></label>
-                                    <input type="radio" id="ambiance1" name="ambiance" value="1">
-                                    <label for="ambiance1" class="star-label"><i class="fas fa-star"></i></label>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Would Recommend -->
                         <div class="mb-3">
                             <div class="form-check">
@@ -502,6 +485,7 @@
             </div>
         </div>
     </div>
+
 @endsection
 
 @push('styles')
@@ -588,33 +572,63 @@
             color: white;
         }
 
-        /* Rating Stars Styles */
-        .rating-stars .stars-input {
-            display: flex;
-            flex-direction: row-reverse;
-            justify-content: flex-end;
+        /* Rating Stars Styles - RESTORED TO ORIGINAL ALIGNMENT */
+        .rating-container {
+            display: block;
         }
 
-        .rating-stars input[type="radio"] {
+        .stars-input {
+            display: flex;
+            gap: 5px;
+            justify-content: flex-start;
+            margin-bottom: 5px;
+        }
+
+        .stars-input input[type="radio"] {
             display: none;
         }
 
-        .rating-stars .star-label {
+        .stars-input .star-label {
             font-size: 2rem;
             color: #e9ecef;
             cursor: pointer;
-            transition: color 0.2s ease;
-            margin-right: 5px;
+            transition: all 0.2s ease;
+            display: inline-block;
         }
 
-        .rating-stars input[type="radio"]:checked~.star-label,
-        .rating-stars .star-label:hover,
-        .rating-stars .star-label:hover~.star-label {
-            color: #ffc107;
+        /* REVERSED THE ORDER - Stars are now 5-1 from left to right */
+        .stars-input {
+            display: flex;
+            flex-direction: row-reverse;
+            /* This is the key fix! */
+            justify-content: flex-end;
+            gap: 5px;
         }
 
-        .rating-stars input[type="radio"]:checked+.star-label {
-            color: #ffc107;
+        /* Now the CSS sibling selectors work correctly */
+        .stars-input input[type="radio"]:checked~.star-label i,
+        .stars-input input[type="radio"]:checked+.star-label i {
+            color: #ffc107 !important;
+        }
+
+        /* Hover effect */
+        .stars-input .star-label:hover i,
+        .stars-input .star-label:hover~.star-label i {
+            color: #ffd700 !important;
+        }
+
+        /* Rating text styling */
+        .rating-text {
+            font-size: 0.9rem;
+            color: #6c757d;
+            min-height: 20px;
+            text-align: left;
+            width: 100%;
+            margin-top: 8px;
+        }
+
+        .rating-text small {
+            font-weight: 500;
         }
 
         .badge.bg-success {
@@ -624,16 +638,65 @@
         .order-items img {
             border-radius: 8px;
         }
+
+        /* Pagination styling */
+        .pagination {
+            margin-bottom: 0;
+        }
+
+        .page-item.active .page-link {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+
+        .page-link {
+            color: #dc3545;
+            border: 1px solid #dee2e6;
+            padding: 0.5rem 0.75rem;
+        }
+
+        .page-link:hover {
+            color: #dc3545;
+            background-color: #f8f9fa;
+            border-color: #dee2e6;
+        }
+
+        .page-item.disabled .page-link {
+            color: #6c757d;
+        }
+
+        /* Card header styling */
+        .account-card > .d-flex {
+            border-bottom: 1px solid #e9ecef;
+            padding-bottom: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Badge styling in nav */
+        .account-nav .badge {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+        }
     </style>
 @endpush
 
 @push('script')
     <script>
         $(document).ready(function() {
-            // Store review data globally
             let currentReviewData = null;
 
-            // Review Modal Setup - FIXED
+            // Function to properly cleanup modal backdrop
+            function cleanupModalBackdrop() {
+                $('body').removeClass('modal-open');
+                $('.modal-backdrop').remove();
+                $('body').css({
+                    'overflow': '',
+                    'padding-right': ''
+                });
+            }
+
+            // Review Modal Setup
             $(document).on('click', '.add-review-btn', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -643,11 +706,8 @@
                 const id = $(this).data('id');
                 const title = $(this).data('title');
 
-                console.log('Review button clicked:', {
-                    type,
-                    id,
-                    title
-                });
+                // Clean up any existing backdrop first
+                cleanupModalBackdrop();
 
                 // Store data
                 currentReviewData = {
@@ -656,55 +716,55 @@
                     title: title
                 };
 
-                // Update modal display
+                // Set hidden form values
+                $('#reviewable_type').val('App\\Models\\' +
+                    (type === 'order' ? 'Order' : 'Reservation'));
+                $('#reviewable_id').val(id);
                 $('#review-item-title').text(title);
-
-                // Show/hide sections based on type
-                if (type === 'order') {
-                    $('#food-quality-section').show();
-                    $('#service-quality-section').hide();
-                    $('#ambiance-section').hide();
-                } else if (type === 'reservation') {
-                    $('#food-quality-section').hide();
-                    $('#service-quality-section').show();
-                    $('#ambiance-section').show();
-                }
 
                 // Reset form
                 $('#reviewForm')[0].reset();
                 $('#rating-text').text('Select your rating');
-                $('.star-label i').css('color', '#e9ecef');
-                $('input[type="radio"]').prop('checked', false);
+                $('input[name="rating"]').prop('checked', false);
 
-                // Show modal using JavaScript
-                const reviewModal = new bootstrap.Modal(document.getElementById('reviewModal'));
-                reviewModal.show();
+                // Show modal
+                $('#reviewModal').modal('show');
             });
 
-            // Star rating interaction
-            $('input[name="rating"]').on('change', function() {
+            // Simple star click handling
+            $(document).on('click', '#reviewModal .star-label', function() {
+                const radioId = $(this).attr('for');
+                const value = $('#' + radioId).val();
+                const ratingTexts = {
+                    5: 'Excellent',
+                    4: 'Very Good',
+                    3: 'Good',
+                    2: 'Fair',
+                    1: 'Poor'
+                };
+
+                $('#rating-text').text(ratingTexts[value] || 'Select your rating');
+                $('#' + radioId).prop('checked', true).trigger('change');
+            });
+
+            // Update text when rating changes
+            $(document).on('change', '#reviewModal input[name="rating"]', function() {
                 const value = $(this).val();
                 const ratingTexts = {
-                    1: 'Poor',
-                    2: 'Fair',
-                    3: 'Good',
+                    5: 'Excellent',
                     4: 'Very Good',
-                    5: 'Excellent'
+                    3: 'Good',
+                    2: 'Fair',
+                    1: 'Poor'
                 };
                 $('#rating-text').text(ratingTexts[value] || 'Select your rating');
-
-                $('.star-label i').css('color', '#e9ecef');
-                $(this).prevAll('.star-label').addBack().find('i').css('color', '#ffc107');
             });
 
-            // Form submission - SIMPLE AND WORKING
+            // Form submission
             $('#reviewForm').on('submit', function(e) {
                 e.preventDefault();
 
-                console.log('Form submitted. Current data:', currentReviewData);
-
-                // Validate we have review data
-                if (!currentReviewData || !currentReviewData.type || !currentReviewData.id) {
+                if (!currentReviewData) {
                     Swal.fire({
                         icon: 'error',
                         title: 'Error!',
@@ -719,38 +779,19 @@
                 const comment = $('#comment').val().trim();
 
                 // Validate required fields
-                if (!rating) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Missing Rating',
-                        text: 'Please select a star rating.'
-                    });
-                    return;
-                }
+                let errors = [];
 
-                if (!reviewTitle) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Missing Title',
-                        text: 'Please enter a review title.'
-                    });
-                    return;
-                }
+                if (!rating) errors.push('Please select an overall rating');
+                if (!reviewTitle) errors.push('Please enter a review title');
+                if (!comment) errors.push('Please enter your review comment');
+                if (comment && comment.length < 10) errors.push(
+                    'Review comment must be at least 10 characters');
 
-                if (!comment) {
+                if (errors.length > 0) {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Missing Comment',
-                        text: 'Please enter your review comment.'
-                    });
-                    return;
-                }
-
-                if (comment.length < 10) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Comment Too Short',
-                        text: 'Please write at least 10 characters.'
+                        title: 'Validation Error',
+                        html: errors.join('<br>')
                     });
                     return;
                 }
@@ -758,34 +799,30 @@
                 // Prepare form data
                 const formData = {
                     _token: $('input[name="_token"]').val(),
-                    reviewable_type: 'App\\Models\\' + currentReviewData.type.charAt(0).toUpperCase() +
-                        currentReviewData.type.slice(1),
-                    reviewable_id: currentReviewData.id,
+                    reviewable_type: $('#reviewable_type').val(),
+                    reviewable_id: $('#reviewable_id').val(),
                     review_title: reviewTitle,
                     comment: comment,
                     rating: rating,
-                    food_quality: $('input[name="food_quality"]:checked').val() || null,
-                    service_quality: $('input[name="service_quality"]:checked').val() || null,
-                    ambiance: $('input[name="ambiance"]:checked').val() || null,
-                    would_recommend: $('#would_recommend').is(':checked') ? 1 : 0
+                    would_recommend: $('#would_recommend').is(':checked') ? 1 : 0,
+                    food_quality: null,
+                    service_quality: null,
+                    ambiance: null
                 };
-
-                console.log('Sending data:', formData);
 
                 // Show loading
                 const submitBtn = $(this).find('button[type="submit"]');
                 const originalText = submitBtn.html();
                 submitBtn.prop('disabled', true).html(
-                    '<i class="fas fa-spinner fa-spin me-1"></i>Submitting...');
+                    '<i class="fas fa-spinner fa-spin me-1"></i>Submitting...'
+                );
 
-                // Send request
+                // Send AJAX request
                 $.ajax({
-                    url: '{{ route('reviews.store') }}',
+                    url: $(this).attr('action'),
                     method: 'POST',
                     data: formData,
                     success: function(response) {
-                        console.log('Success response:', response);
-
                         if (response.success) {
                             Swal.fire({
                                 icon: 'success',
@@ -795,12 +832,13 @@
                                 showConfirmButton: false
                             });
 
-                            // Close modal
-                            bootstrap.Modal.getInstance(document.getElementById('reviewModal'))
-                                .hide();
+                            // Properly hide modal and cleanup
+                            $('#reviewModal').modal('hide');
+                            setTimeout(cleanupModalBackdrop, 300);
 
-                            // Reload page after delay
-                            setTimeout(() => window.location.reload(), 1500);
+                            setTimeout(() => {
+                                window.location.reload();
+                            }, 1500);
                         } else {
                             Swal.fire({
                                 icon: 'error',
@@ -811,51 +849,113 @@
                         }
                     },
                     error: function(xhr) {
-                        console.error('Error:', xhr.responseJSON);
-
-                        let message = 'Something went wrong. Please try again.';
+                        let errorMessage = 'Failed to submit review. Please try again.';
                         if (xhr.responseJSON) {
-                            if (xhr.responseJSON.message) {
-                                message = xhr.responseJSON.message;
-                            }
+                            if (xhr.responseJSON.message) errorMessage = xhr.responseJSON
+                                .message;
                             if (xhr.responseJSON.errors) {
                                 const errors = Object.values(xhr.responseJSON.errors).flat();
-                                message = errors.join('<br>');
+                                errorMessage = errors.join('<br>');
                             }
                         }
-
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            html: message
+                            html: errorMessage
                         });
                         submitBtn.prop('disabled', false).html(originalText);
                     }
                 });
             });
 
-            // Reset when modal is closed
+            // Reset modal when closed
             $('#reviewModal').on('hidden.bs.modal', function() {
                 currentReviewData = null;
                 $('#reviewForm')[0].reset();
-                $('.star-label i').css('color', '#e9ecef');
+                $('input[name="rating"]').prop('checked', false);
                 $('#rating-text').text('Select your rating');
+
+                // Cleanup backdrop
+                cleanupModalBackdrop();
             });
 
-            // Tab functionality
+            // Also cleanup on cancel button click
+            $(document).on('click', '.btn-secondary[data-bs-dismiss="modal"], .btn-close', function() {
+                setTimeout(cleanupModalBackdrop, 150);
+            });
+
+            // Tab functionality with localStorage persistence
             $('#accountTabs a').on('click', function(e) {
                 e.preventDefault();
+                const target = $(this).attr('href');
                 $(this).tab('show');
+                localStorage.setItem('activeAccountTab', target);
             });
 
             $('#accountTabs a').on('shown.bs.tab', function(e) {
                 localStorage.setItem('activeAccountTab', $(e.target).attr('href'));
             });
 
+            // Restore active tab on page load
             const activeTab = localStorage.getItem('activeAccountTab');
             if (activeTab) {
                 $('#accountTabs a[href="' + activeTab + '"]').tab('show');
             }
+
+            // Handle pagination links - they should maintain tab state via fragment (#reservations, #orders, #reviews)
+            $(document).on('click', '.pagination a', function(e) {
+                // No need to prevent default - let the fragment identifier handle tab switching
+                // The fragment in the URL (#reservations, #orders, #reviews) will activate the correct tab
+            });
+
+            // Cancel reservation functionality
+            $(document).on('click', '.cancel-reservation', function() {
+                const reservationId = $(this).data('reservation-id');
+                Swal.fire({
+                    title: 'Cancel Reservation?',
+                    text: "Are you sure you want to cancel this reservation?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#dc3545',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, cancel it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: '/reservation/' + reservationId + '/cancel',
+                            method: 'POST',
+                            data: {
+                                _token: $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
+                                if (response.success) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Cancelled!',
+                                        text: response.message,
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    });
+                                    setTimeout(() => window.location.reload(), 1500);
+                                } else {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: response.message
+                                    });
+                                }
+                            },
+                            error: function() {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Error!',
+                                    text: 'Failed to cancel reservation. Please try again.'
+                                });
+                            }
+                        });
+                    }
+                });
+            });
         });
     </script>
 @endpush

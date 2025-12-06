@@ -13,7 +13,7 @@ class ReservationController extends Controller
         $this->middleware(['permission:Reservation Index,admin'])->only(['index']);
         $this->middleware(['permission:Reservation Update,admin'])->only(['updateReservationStatus', 'getReservationDetails']);
     }
-    
+
     public function index()
     {
         $reservations = ModelsReservation::with('user', 'table')
@@ -31,7 +31,36 @@ class ReservationController extends Controller
         ]);
 
         try {
-            $reservation = ModelsReservation::findOrFail($id);
+            $reservation = ModelsReservation::with('order', 'table')->findOrFail($id);
+
+            if (!$reservation) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Reservation not found'
+                ], 404);
+            }
+
+            if ($reservation->status === 'completed' || $reservation->status === 'cancelled') {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Cannot update status of a completed or cancelled reservation'
+                ], 400);
+            }
+
+            if ($reservation->status === $request->status) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Reservation is already in the requested status'
+                ], 400);
+            }
+
+            if (!$this->isValidReservationStatusTransition($reservation->status, $request->status)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid status transition from ' . ucfirst($reservation->status) . ' to ' . ucfirst($request->status)
+                ], 400);
+            }
+
             $reservation->update(['status' => $request->status]);
 
             return response()->json([
@@ -64,5 +93,17 @@ class ReservationController extends Controller
                 'message' => 'Reservation not found'
             ], 404);
         }
+    }
+
+    private function isValidReservationStatusTransition($currentStatus, $newStatus)
+    {
+        $validTransitions = [
+            'pending' => ['confirmed', 'cancelled'],
+            'confirmed' => ['completed', 'cancelled'],
+            'completed' => [],
+            'cancelled' => []
+        ];
+
+        return in_array($newStatus, $validTransitions[$currentStatus] ?? []);
     }
 }

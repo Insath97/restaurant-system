@@ -164,7 +164,7 @@
     <script>
         $(document).ready(function() {
             // Initialize DataTable
-            $('#ordersTable').DataTable({
+            let ordersTable = $('#ordersTable').DataTable({
                 responsive: true,
                 dom: "<'row'<'col-sm-12 col-md-6'l><'col-sm-12 col-md-6'f>>" +
                     "<'row'<'col-sm-12'tr>>" +
@@ -184,7 +184,8 @@
             });
 
             // Change status modal
-            $(document).on('click', '.change-status', function() {
+            $(document).on('click', '.change-status', function(e) {
+                e.preventDefault();
                 const orderId = $(this).data('order-id');
                 const currentStatus = $(this).data('current-status');
 
@@ -192,20 +193,24 @@
                     .replace(':id', orderId));
                 $('#statusSelect').val(currentStatus);
 
+                // Store the row element for later update
+                $('#changeStatusForm').data('row-element', $(this).closest('tr'));
+
                 new bootstrap.Modal(document.getElementById('statusModal')).show();
             });
 
             // View details modal
-            $(document).on('click', '.view-details', function() {
+            $(document).on('click', '.view-details', function(e) {
+                e.preventDefault();
                 const orderId = $(this).data('order-id');
 
                 // Show loading state
                 $('#detailsModal .modal-body').html(`
-                    <div class="text-center py-4">
-                        <div class="spinner-border text-primary" role="status"></div>
-                        <p class="mt-2">Loading order details...</p>
-                    </div>
-                `);
+                <div class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2">Loading order details...</p>
+                </div>
+            `);
 
                 new bootstrap.Modal(document.getElementById('detailsModal')).show();
 
@@ -223,154 +228,154 @@
                             // Table information
                             if (order.reservation && order.reservation.table) {
                                 tableHtml = `
-                                    <div class="row mb-3">
-                                        <div class="col-md-6">
-                                            <strong>Table:</strong> ${order.reservation.table.name} (${order.reservation.table.code})
-                                        </div>
-                                        <div class="col-md-6">
-                                            <strong>Capacity:</strong> ${order.reservation.table.capacity} people
-                                        </div>
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
+                                        <strong>Table:</strong> ${order.reservation.table.name} (${order.reservation.table.code})
                                     </div>
-                                `;
+                                    <div class="col-md-6">
+                                        <strong>Capacity:</strong> ${order.reservation.table.capacity} people
+                                    </div>
+                                </div>
+                            `;
                             } else {
                                 tableHtml = `
-                                    <div class="alert alert-info">
-                                        <i class="fas fa-info-circle me-2"></i>
-                                        No table reservation for this order.
-                                    </div>
-                                `;
+                                <div class="alert alert-info">
+                                    <i class="fas fa-info-circle me-2"></i>
+                                    No table reservation for this order.
+                                </div>
+                            `;
                             }
 
                             // Order items
                             if (order.items && order.items.length > 0) {
                                 itemsHtml = `
-                                    <h6 class="mt-4 mb-3"><i class="fas fa-utensils me-2"></i>Order Items</h6>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-bordered">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Item</th>
-                                                    <th>Price</th>
-                                                    <th>Qty</th>
-                                                    <th>Total</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                `;
+                                <h6 class="mt-4 mb-3"><i class="fas fa-utensils me-2"></i>Order Items</h6>
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Item</th>
+                                                <th>Price</th>
+                                                <th>Qty</th>
+                                                <th>Total</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                            `;
 
                                 order.items.forEach(item => {
                                     itemsHtml += `
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <img src="{{ asset('') }}${item.menu ? item.menu.image : ''}"
-                                                         alt="${item.menu_name}"
-                                                         class="me-2"
-                                                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"
-                                                         onerror="this.src='{{ asset('default/dummy_600x400_ffffff_cccccc.png') }}'">
-                                                    <div>
-                                                        <strong>${item.menu_name}</strong>
-                                                        ${item.menu && item.menu.description ? `<br><small class="text-muted">${item.menu.description}</small>` : ''}
-                                                    </div>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center">
+                                                <img src="{{ asset('') }}${item.menu ? item.menu.image : ''}"
+                                                     alt="${item.menu_name}"
+                                                     class="me-2"
+                                                     style="width: 40px; height: 40px; object-fit: cover; border-radius: 4px;"
+                                                     onerror="this.src='{{ asset('default/dummy_600x400_ffffff_cccccc.png') }}'">
+                                                <div>
+                                                    <strong>${item.menu_name}</strong>
+                                                    ${item.menu && item.menu.description ? `<br><small class="text-muted">${item.menu.description}</small>` : ''}
                                                 </div>
-                                            </td>
-                                            <td>Rs. ${parseFloat(item.price).toFixed(2)}</td>
-                                            <td>${item.quantity}</td>
-                                            <td><strong>Rs. ${parseFloat(item.total).toFixed(2)}</strong></td>
-                                        </tr>
-                                    `;
+                                            </div>
+                                        </td>
+                                        <td>Rs. ${parseFloat(item.price).toFixed(2)}</td>
+                                        <td>${item.quantity}</td>
+                                        <td><strong>Rs. ${parseFloat(item.total).toFixed(2)}</strong></td>
+                                    </tr>
+                                `;
                                 });
 
                                 itemsHtml += `
-                                            </tbody>
-                                            <tfoot class="table-light">
-                                                <tr>
-                                                    <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
-                                                    <td><strong>Rs. ${parseFloat(order.subtotal).toFixed(2)}</strong></td>
-                                                </tr>
-                                                <tr>
-                                                    <td colspan="3" class="text-end"><strong>Service Charge:</strong></td>
-                                                    <td><strong>Rs. ${parseFloat(order.service_charge).toFixed(2)}</strong></td>
-                                                </tr>
-                                                ${order.delivery_fee > 0 ? `
-                                                        <tr>
-                                                            <td colspan="3" class="text-end"><strong>Delivery Fee:</strong></td>
-                                                            <td><strong>Rs. ${parseFloat(order.delivery_fee).toFixed(2)}</strong></td>
-                                                        </tr>
-                                                        ` : ''}
-                                                <tr>
-                                                    <td colspan="3" class="text-end"><strong>Total Amount:</strong></td>
-                                                    <td><strong>Rs. ${parseFloat(order.total).toFixed(2)}</strong></td>
-                                                </tr>
-                                            </tfoot>
-                                        </table>
-                                    </div>
-                                `;
+                                        </tbody>
+                                        <tfoot class="table-light">
+                                            <tr>
+                                                <td colspan="3" class="text-end"><strong>Subtotal:</strong></td>
+                                                <td><strong>Rs. ${parseFloat(order.subtotal).toFixed(2)}</strong></td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="3" class="text-end"><strong>Service Charge:</strong></td>
+                                                <td><strong>Rs. ${parseFloat(order.service_charge).toFixed(2)}</strong></td>
+                                            </tr>
+                                            ${order.delivery_fee > 0 ? `
+                                                    <tr>
+                                                        <td colspan="3" class="text-end"><strong>Delivery Fee:</strong></td>
+                                                        <td><strong>Rs. ${parseFloat(order.delivery_fee).toFixed(2)}</strong></td>
+                                                    </tr>
+                                                ` : ''}
+                                            <tr>
+                                                <td colspan="3" class="text-end"><strong>Total Amount:</strong></td>
+                                                <td><strong>Rs. ${parseFloat(order.total).toFixed(2)}</strong></td>
+                                            </tr>
+                                        </tfoot>
+                                    </table>
+                                </div>
+                            `;
                             }
 
                             const detailsHtml = `
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <div class="card mb-3">
-                                            <div class="card-header bg-primary text-white">
-                                                <h6 class="mb-0"><i class="fas fa-shopping-bag me-2"></i>Order Information</h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <p><strong>Order Number:</strong> ${order.order_number}</p>
-                                                <p><strong>Order Type:</strong>
-                                                    <span class="badge bg-${order.order_type === 'dine_in' ? 'info' : 'warning'}">
-                                                        ${order.order_type.replace('_', ' ').toUpperCase()}
-                                                    </span>
-                                                </p>
-                                                <p><strong>Status:</strong>
-                                                    <span class="badge bg-${getOrderStatusColor(order.status)}">
-                                                        ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                                                    </span>
-                                                </p>
-                                                <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
-                                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-primary text-white">
+                                            <h6 class="mb-0"><i class="fas fa-shopping-bag me-2"></i>Order Information</h6>
                                         </div>
-                                    </div>
-
-                                    <div class="col-md-6">
-                                        <div class="card mb-3">
-                                            <div class="card-header bg-info text-white">
-                                                <h6 class="mb-0"><i class="fas fa-user me-2"></i>Customer Information</h6>
-                                            </div>
-                                            <div class="card-body">
-                                                <p><strong>Name:</strong> ${order.customer_name}</p>
-                                                <p><strong>Email:</strong> ${order.customer_email}</p>
-                                                <p><strong>Phone:</strong> ${order.customer_phone}</p>
-                                                ${order.delivery_address ? `<p><strong>Delivery Address:</strong> ${order.delivery_address}</p>` : ''}
-                                                ${order.special_instructions ? `<p><strong>Special Instructions:</strong> ${order.special_instructions}</p>` : ''}
-                                            </div>
+                                        <div class="card-body">
+                                            <p><strong>Order Number:</strong> ${order.order_number}</p>
+                                            <p><strong>Order Type:</strong>
+                                                <span class="badge bg-${order.order_type === 'dine_in' ? 'info' : 'warning'}">
+                                                    ${order.order_type.replace('_', ' ').toUpperCase()}
+                                                </span>
+                                            </p>
+                                            <p><strong>Status:</strong>
+                                                <span class="badge bg-${getOrderStatusColor(order.status)}">
+                                                    ${order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                                </span>
+                                            </p>
+                                            <p><strong>Order Date:</strong> ${new Date(order.created_at).toLocaleString()}</p>
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="card mb-3">
-                                    <div class="card-header bg-success text-white">
-                                        <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Information</h6>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <p><strong>Payment Method:</strong> ${order.payment_method.replace(/_/g, ' ').toUpperCase()}</p>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <p><strong>Payment Status:</strong>
-                                                    <span class="badge bg-${order.payment_status ? 'success' : 'warning'}">
-                                                        ${order.payment_status ? 'PAID' : 'PENDING'}
-                                                    </span>
-                                                </p>
-                                            </div>
+                                <div class="col-md-6">
+                                    <div class="card mb-3">
+                                        <div class="card-header bg-info text-white">
+                                            <h6 class="mb-0"><i class="fas fa-user me-2"></i>Customer Information</h6>
+                                        </div>
+                                        <div class="card-body">
+                                            <p><strong>Name:</strong> ${order.customer_name}</p>
+                                            <p><strong>Email:</strong> ${order.customer_email}</p>
+                                            <p><strong>Phone:</strong> ${order.customer_phone}</p>
+                                            ${order.delivery_address ? `<p><strong>Delivery Address:</strong> ${order.delivery_address}</p>` : ''}
+                                            ${order.special_instructions ? `<p><strong>Special Instructions:</strong> ${order.special_instructions}</p>` : ''}
                                         </div>
                                     </div>
                                 </div>
+                            </div>
 
-                                ${tableHtml}
-                                ${itemsHtml}
-                            `;
+                            <div class="card mb-3">
+                                <div class="card-header bg-success text-white">
+                                    <h6 class="mb-0"><i class="fas fa-credit-card me-2"></i>Payment Information</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Payment Method:</strong> ${order.payment_method.replace(/_/g, ' ').toUpperCase()}</p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Payment Status:</strong>
+                                                <span class="badge bg-${order.payment_status ? 'success' : 'warning'}">
+                                                    ${order.payment_status ? 'PAID' : 'PENDING'}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            ${tableHtml}
+                            ${itemsHtml}
+                        `;
 
                             $('#detailsModal .modal-body').html(detailsHtml);
                         }
@@ -387,11 +392,11 @@
                         }
 
                         $('#detailsModal .modal-body').html(`
-                            <div class="alert alert-danger">
-                                <i class="fas fa-exclamation-triangle me-2"></i>
-                                ${errorMsg}
-                            </div>
-                        `);
+                        <div class="alert alert-danger">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            ${errorMsg}
+                        </div>
+                    `);
                     }
                 });
             });
@@ -403,6 +408,7 @@
                 const formData = form.serialize();
                 const submitBtn = form.find('button[type="submit"]');
                 const orderId = form.attr('action').split('/').pop();
+                const $row = form.data('row-element');
 
                 // Show loading state
                 submitBtn.prop('disabled', true);
@@ -418,17 +424,66 @@
                     dataType: 'json',
                     success: function(response) {
                         if (response.success) {
-                            // Update status badge in table
-                            $(`.order-status[data-order-id="${orderId}"]`)
+                            // Update status badge
+                            $row.find(`.order-status[data-order-id="${orderId}"]`)
                                 .removeClass(
                                     'bg-warning bg-success bg-danger bg-info bg-primary bg-secondary'
-                                )
+                                    )
                                 .addClass('bg-' + getOrderStatusColor(response.status))
-                                .text(getOrderStatusText(response.status));
+                                .text(response.status_text || getOrderStatusText(response
+                                    .status));
 
                             // Update dropdown current status
-                            $(`[data-order-id="${orderId}"] .change-status`)
-                                .data('current-status', response.status);
+                            $row.find('.change-status').data('current-status', response.status);
+
+                            // Update payment status automatically when status is completed
+                            if (response.status === 'completed' && response.payment_status !==
+                                undefined) {
+                                // Get the payment method text
+                                const paymentMethod = $row.find('td:nth-child(9) small').text();
+
+                                // Update payment badge
+                                $row.find('td:nth-child(9) .badge')
+                                    .removeClass('bg-success bg-warning')
+                                    .addClass('bg-' + (response.payment_status ? 'success' :
+                                        'warning'))
+                                    .text(response.payment_status_text || (response
+                                        .payment_status ? 'Paid' : 'Pending'));
+                            }
+
+                            // Also update DataTable's internal data if needed
+                            if (ordersTable) {
+                                // Get the row index in DataTable
+                                const rowIndex = ordersTable.row($row).index();
+                                if (rowIndex !== undefined) {
+                                    // Update the row data in DataTable
+                                    const rowData = ordersTable.row(rowIndex).data();
+
+                                    // Update status cell (8th column - index 7)
+                                    rowData[7] = `
+                                    <span class="badge bg-${getOrderStatusColor(response.status)} order-status"
+                                          data-order-id="${orderId}">
+                                        ${response.status_text || getOrderStatusText(response.status)}
+                                    </span>
+                                `;
+
+                                    // Update payment cell (9th column - index 8) if status is completed
+                                    if (response.status === 'completed') {
+                                        const paymentMethod = $row.find('td:nth-child(9) small')
+                                            .text();
+                                        rowData[8] = `
+                                        <span class="badge bg-${response.payment_status ? 'success' : 'warning'}">
+                                            ${response.payment_status_text || (response.payment_status ? 'Paid' : 'Pending')}
+                                        </span>
+                                        <br>
+                                        <small class="text-muted">${paymentMethod}</small>
+                                    `;
+                                    }
+
+                                    ordersTable.row(rowIndex).data(rowData);
+                                    ordersTable.draw(false);
+                                }
+                            }
 
                             // Hide modal
                             bootstrap.Modal.getInstance(document.getElementById('statusModal'))
