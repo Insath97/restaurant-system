@@ -43,7 +43,7 @@ class AuthController extends Controller
             Auth::guard('admin')->login($admin);
 
 
-            return redirect()->route('admin.dashboard.index');;
+            return redirect()->route('admin.dashboard.index');
         } catch (\Throwable $th) {
             return back()->with('error', 'An error occurred during login. Please try again.');
         }

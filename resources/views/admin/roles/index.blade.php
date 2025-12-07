@@ -212,7 +212,7 @@
                                         <input class="form-check-input permission-checkbox"
                                             type="checkbox"
                                             name="permissions[]"
-                                            value="${permission.id}"
+                                            value="${permission.name}"
                                             id="edit_perm_${permission.id}"
                                             data-group="${group.slug}"
                                             ${isChecked}>

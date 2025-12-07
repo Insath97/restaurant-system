@@ -89,7 +89,6 @@
     @include('admin.menu.view')
 @endsection
 
-
 @push('scripts')
     <script>
         $(document).ready(function() {
